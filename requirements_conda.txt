@@ -1,0 +1,5 @@
+pyqt>=5.0
+loguru
+pandas
+openpyxl
+lxml
