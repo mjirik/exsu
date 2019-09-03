@@ -44,6 +44,8 @@ requirements:
     - lxml
     - openpyxl
     - matplotlib
+    - scikit-image
+    - xlrd
     # - { pin_compatible('imma', max_pin='x.x') }
 
   run:
@@ -53,6 +55,8 @@ requirements:
     - lxml
     - openpyxl
     - matplotlib
+    - scikit-image
+    - xlrd
     # - { pin_compatible('imma', max_pin='x.x') }
     # - numpy
     # - pyqt 4.11.* # [not win]

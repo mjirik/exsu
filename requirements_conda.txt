@@ -4,3 +4,5 @@ pandas
 openpyxl
 lxml
 matplotlib
+scikit-image
+xlrd

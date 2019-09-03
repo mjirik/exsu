@@ -10,7 +10,6 @@ import pandas as pd
 import os.path as op
 import os
 import matplotlib.pyplot as plt
-import skimage.io
 import warnings
 from pathlib import Path
 import numpy as np
@@ -101,6 +100,7 @@ class Report:
         :param arr:
         :return:
         """
+        import skimage.io
 
         filename, ext = op.splitext(base_fn)
         if self.save:
@@ -224,7 +224,7 @@ def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
     Returns: None
     """
     logger.debug(f"Writing XLSX to: {str(filename)}")
-    from openpyxl import load_workbook
+    # from openpyxl import load_workbook
 
     import pandas as pd
     filename = Path(filename)
@@ -326,7 +326,7 @@ def append_df_to_excel_no_head_processing(filename, df, sheet_name='Sheet1', sta
 
     Returns: None
     """
-    from openpyxl import load_workbook
+    # from openpyxl import load_workbook
 
     import pandas as pd
 
@@ -345,6 +345,7 @@ def append_df_to_excel_no_head_processing(filename, df, sheet_name='Sheet1', sta
 
     try:
         # try to open an existing workbook
+        from openpyxl import load_workbook
         writer.book = load_workbook(filename)
 
         # get the last row in the existing Excel sheet
