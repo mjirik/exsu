@@ -8,11 +8,8 @@ import io3d
 from pathlib import Path
 import shutil
 import pandas as pd
-
-
 # import openslide
 import exsu.report
-
 
 
 class ReportTest(unittest.TestCase):
