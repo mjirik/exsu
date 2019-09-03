@@ -4,9 +4,8 @@
 from loguru import logger
 import unittest
 import os
-import io3d
 from pathlib import Path
-import shutil
+# import shutil
 import pandas as pd
 # import openslide
 import exsu.report
