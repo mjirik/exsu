@@ -17,4 +17,4 @@ def inc(x):
 # @pytest.mark.interactive
 # @pytest.mark.slow
 def test_answer():
-    assert inc(3) == 5
+    assert inc(3) == 4
