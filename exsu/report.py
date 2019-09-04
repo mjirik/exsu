@@ -9,7 +9,6 @@ from loguru import logger
 import pandas as pd
 import os.path as op
 import os
-import matplotlib.pyplot as plt
 import warnings
 from pathlib import Path
 import numpy as np
@@ -24,7 +23,7 @@ class Report:
         self.imgs = {}
         self.actual_row = {}
         self.show = False
-        self.save = False
+        self.save = True
         self.debug = False
         self.level = 50
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
@@ -94,7 +93,7 @@ class Report:
             append_df_to_excel(filename, self.df)
             # append_df_to_excel_no_head_processing(filename, self.df)
 
-    def imsave(self, base_fn, arr:np.ndarray, k=50, level=50, npz_level=40):
+    def imsave(self, base_fn, arr:np.ndarray, k=50, level=90, level_skimage=40, level_npz=20):
         """
         :param base_fn: with a format slot for annotation id like "skeleton_{}.png"
         :param arr:
@@ -103,17 +102,23 @@ class Report:
         import skimage.io
 
         filename, ext = op.splitext(base_fn)
+        if ext == '':
+            ext = ".png"
         if self.save:
-            fn = op.join(self.outputdir, filename + "_fig" + ext)
-            plt.imsave(fn, arr)
-
             if self._is_under_level(level):
+                import matplotlib.pyplot as plt
+                fn = op.join(self.outputdir, filename + ext)
+                logger.debug(f"write to file: {fn}")
+                plt.imsave(fn, arr)
+
+            if self._is_under_level(level_skimage):
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", ".*low contrast image.*")
                     # warnings.simplefilter("low contrast image")
-                    fn = op.join(self.outputdir, filename + ext)
+                    fn = op.join(self.outputdir, filename + "_skimage" + ext)
+                    logger.debug(f"write to file: {fn}")
                     skimage.io.imsave(fn, k * arr)
-            if self._is_under_level(npz_level):
+            if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
 
     def _save_arr(self, base_fn, arr:np.ndarray):
@@ -149,6 +154,7 @@ class Report:
         """
         filename, ext = op.splitext(base_fn)
         if self._is_under_level(level):
+            import matplotlib.pyplot as plt
             fig = plt.figure()
             plt.imshow(arr)
             plt.colorbar()
@@ -167,8 +173,11 @@ class Report:
     #         self.imsave
 
     def savefig_and_show(self, base_fn, fig, level=60):
+        import matplotlib.pyplot as plt
         if self._is_under_level(level):
             filename, ext = op.splitext(base_fn)
+            if ext == '':
+                ext = '.png'
             if self.save:
                 fn = op.join(self.outputdir, filename + "" + ext)
                 plt.savefig(fn)
