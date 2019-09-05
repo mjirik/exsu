@@ -54,7 +54,7 @@ install:
 
     # - sudo apt-get install -qq $(< apt_requirements.txt)
 #    - conda create --yes -n travis python=$CONDA_PYTHON_VERSION
-    - conda create -n travis --yes --file requirements_conda.txt python=$CONDA_PYTHON_VERSION pytest-cov
+    - conda create -n travis --yes --file requirements_conda.txt python=$CONDA_PYTHON_VERSION pytest-cov coveralls
     - source activate travis
 #    - Install dependencies
 #    - conda install --yes coveralls pytest pytest-cov
