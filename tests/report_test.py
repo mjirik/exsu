@@ -9,6 +9,7 @@ from pathlib import Path
 import pandas as pd
 # import openslide
 import exsu.report
+import numpy as np
 
 
 class ReportTest(unittest.TestCase):
@@ -41,5 +42,20 @@ class ReportTest(unittest.TestCase):
 
         df = pd.read_excel(commonsheet)
         self.assertEqual(len(df), 3, "3 lines expected in the excel file")
+
+    def test_imsave(self):
+        outputdir = Path("./test_report/")
+        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+        if commonsheet.exists():
+            os.remove(commonsheet)
+        fn = "test_image.png"
+        img = 50 + np.random.rand(100, 100) * 30
+        img[20:60, 20:60] += 100
+        img = img.astype(np.uint8)
+        report = exsu.report.Report(outputdir=outputdir, additional_spreadsheet_fn=commonsheet)
+        report.imsave(fn, img)
+
+        assert (outputdir / fn).exists()
+
 
 
