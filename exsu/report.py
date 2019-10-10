@@ -1,10 +1,9 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Process lobulus analysis.
+Module provide simple interface to save experiment outputs directory with
+spreadsheet and images.
 """
-# import logging
-# logger = logging.getLogger(__name__)
 from loguru import logger
 import pandas as pd
 import os.path as op
@@ -26,6 +25,7 @@ class Report:
         self.save = True
         self.debug = False
         self.level = 50
+        self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
         self.persistent_cols:dict = {}
 
@@ -39,6 +39,7 @@ class Report:
         :return:
         """
         self.persistent_cols = dct
+        logger.debug(f"Adding persistent cols: {list(self.persistent_cols.keys())}")
 
     def init_with_output_dir(self, outputdir):
         self.outputdir = Path(outputdir).expanduser()
@@ -59,9 +60,12 @@ class Report:
     # def write_table(self, filename):
     def finish_actual_row(self):
         data = self.actual_row
-        logger.debug(f"Adding persistent cols: {list(self.persistent_cols.keys())}")
+        logger.debug(f"Actual row cols: {list(self.actual_row.keys())}")
+        logger.debug(f"Persistent cols: {list(self.persistent_cols.keys())}")
         data.update(self.persistent_cols)
+
         df = pd.DataFrame([list(data.values())], columns=list(data.keys()))
+        logger.debug(f"Unique values types {np.unique(map(str, map(type, data.values())))}")
         self.df = self.df.append(df, ignore_index=True)
 
             # if excel_path.exists():
@@ -84,14 +88,21 @@ class Report:
         self.actual_row = {}
 
     def dump(self):
-        self.df.to_excel(op.join(self.outputdir, "data.xlsx"))
+        pth = op.join(self.outputdir, self.spreadsheet_fn)
+        logger.debug(f"Saving to file {pth}")
+        ppth = Path(pth)
+        if not ppth.parent.exists():
+            logger.debug("creating output dir")
+            os.makedirs(ppth.parent)
+        self.df.to_excel(pth)
 
         if self.additional_spreadsheet_fn is not None:
             excel_path = Path(self.additional_spreadsheet_fn)
             # print("we will write to excel", excel_path)
             filename = str(excel_path)
             append_df_to_excel(filename, self.df)
-            # append_df_to_excel_no_head_processing(filename, self.df)
+        logger.debug(f"Saved")
+        # append_df_to_excel_no_head_processing(filename, self.df)
 
     def imsave(self, base_fn, arr:np.ndarray, k=50, level=90, level_skimage=40, level_npz=20):
         """
