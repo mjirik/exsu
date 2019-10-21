@@ -14,17 +14,34 @@ import numpy as np
 
 
 class Report:
-    def __init__(self, outputdir=None, additional_spreadsheet_fn=None):
+    def __init__(
+            self,
+            outputdir=None,
+            additional_spreadsheet_fn=None,
+            level=50,
+            save=True,
+            show=True,
+            debug=False,
+    ):
+        """
+
+        :param outputdir:
+        :param additional_spreadsheet_fn:
+        :param level: control initial level
+        :param save:
+        :param show:
+        :param debug:
+        """
         # self.outputdir = op.expanduser(outputdir)
 
 
         self.df:pd.DataFrame = None
         self.imgs = {}
         self.actual_row = {}
-        self.show = False
-        self.save = True
-        self.debug = False
-        self.level = 50
+        self.show = show
+        self.save = save
+        self.debug = debug
+        self.level = level
         self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
         self.persistent_cols:dict = {}
@@ -32,13 +49,18 @@ class Report:
         if outputdir is not None:
             self.init_with_output_dir(outputdir)
 
-    def set_persistent_cols(self, dct:dict):
+    def set_persistent_cols(self, dct:dict, clear:bool=False):
         """
         Set data which will be appended to all rows.
         :param dct: dictionary with column name and value
+        :param clear: True or False. Clear persistent cols before setting.
         :return:
         """
-        self.persistent_cols = dct
+        if clear:
+            self.persistent_cols = dct
+        else:
+            self.persistent_cols.update(dct)
+
         logger.debug(f"Adding persistent cols: {list(self.persistent_cols.keys())}")
 
     def init_with_output_dir(self, outputdir):

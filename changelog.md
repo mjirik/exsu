@@ -2,4 +2,5 @@
 
 ## Version 0.1. 
 
- * Report support
+ * [Added] Report support
+ * [Added] Clean persistent cols ability
