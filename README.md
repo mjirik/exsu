@@ -68,8 +68,10 @@ report = exsu.report.Report(repodir=Path(__file__).parent.resolve())
 report.finish_actual_row()
 report.df
 ```
+Output DataFrame
+```
+                               repo exsu id  ...  repo exsu dirty files
+0  1da301da36cec0fb931f60dd9acca790ec715892  ...      exsu/git_tools.py
+```
 
-```
-                               repo exsu id  repo exsu is dirty
-0  a1c966471ac3c97a4a39a51c2c213a935592dfd0                True
-```
+More than one repositories can be added with `report.add_repo(repodir, reponame=None)`.

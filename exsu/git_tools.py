@@ -18,10 +18,15 @@ def repo_status_to_dict(repodir:Union[Path, str], reponame:str=None):
     if reponame is None:
         reponame = repodir.resolve().stem
 
+    dirty = repo.is_dirty()
     retval = {
         f"repo {reponame} id": repo.head.object.hexsha,
-        f"repo {reponame} is dirty": repo.is_dirty(),
+        f"repo {reponame} is dirty": dirty,
     }
+    if dirty:
+        dirty_files = ",".join([item.a_path for item in repo.index.diff(None)])
+        retval[f"repo {reponame} dirty files"] = dirty_files
+
     try:
         describe = repo.git.describe()
         retval[f"repo {reponame} describe"] = describe
