@@ -16,4 +16,3 @@ def test_repo():
     report.finish_actual_row()
     print(report.df)
     assert report.df["repo exsu id"] is not None
-    assert False
