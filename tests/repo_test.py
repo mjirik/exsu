@@ -12,8 +12,12 @@ import exsu.report
 import exsu.git_tools
 
 def test_repo():
+    """
+    Test non repo dir
+    :return:
+    """
     pth1 = Path(__file__).parent.parent.resolve().absolute()
-    pth2 = Path(__file__).parent.resolve().absolute()
+    pth2 = Path(__file__).parent.parent.parent.resolve().absolute()
     logger.debug(f"pth1:{pth1}")
     logger.debug(f"pth2:{pth2}")
     rows_git_repo = exsu.git_tools.repo_status_to_dict(repodir=pth1)
