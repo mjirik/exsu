@@ -46,6 +46,7 @@ requirements:
     - matplotlib
     - scikit-image
     - xlrd
+    - gitpython
     # - { pin_compatible('imma', max_pin='x.x') }
 
   run:
@@ -57,6 +58,7 @@ requirements:
     - matplotlib
     - scikit-image
     - xlrd
+    - gitpython
     # - { pin_compatible('imma', max_pin='x.x') }
     # - numpy
     # - pyqt 4.11.* # [not win]

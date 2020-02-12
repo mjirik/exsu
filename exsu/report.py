@@ -10,7 +10,9 @@ import os.path as op
 import os
 import warnings
 from pathlib import Path
+from typing import Union
 import numpy as np
+from . import git_tools
 
 
 class Report:
@@ -22,6 +24,8 @@ class Report:
             save=True,
             show=True,
             debug=False,
+            repodir=None,
+            reponame=None,
     ):
         """
 
@@ -31,6 +35,7 @@ class Report:
         :param save:
         :param show:
         :param debug:
+        :param repodir: git repository directory to watch. Repository hash will be added to every row.
         """
         # self.outputdir = op.expanduser(outputdir)
 
@@ -45,9 +50,21 @@ class Report:
         self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
         self.persistent_cols:dict = {}
+        # self.repos = []
 
         if outputdir is not None:
             self.init_with_output_dir(outputdir)
+        else:
+            self.init()
+
+        if repodir is not None:
+            self.add_repo(repodir, reponame)
+
+    def add_repo(self, repodir:Union[Path, str], reponame:str=None):
+        # self.repos.push((repodir, reponame))
+        repo_cols = git_tools.repo_status_to_dict(repodir, reponame)
+        self.set_persistent_cols(repo_cols)
+
 
     def set_persistent_cols(self, dct:dict, clear:bool=False):
         """

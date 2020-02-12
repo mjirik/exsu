@@ -6,3 +6,4 @@ lxml
 matplotlib
 scikit-image
 xlrd
+gitpython
