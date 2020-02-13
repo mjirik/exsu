@@ -139,11 +139,11 @@ class ReportTest(unittest.TestCase):
             show=False
         )
         fig = plt.figure()
-        print("before imshow")
-        plt.imshow(img)
-        report.savefig(fn)
+        # plt.imshow(img)
+        # report.savefig(fn)
+        # plt.close()
+        report.savefig_and_show(fn, fig=fig)
         plt.close()
-        # report.savefig_and_show(fn, fig=fig)
 
         # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
 
