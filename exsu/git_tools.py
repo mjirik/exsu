@@ -8,7 +8,14 @@ from typing import Union
 from pathlib import Path
 
 
-def repo_status_to_dict(repodir:Union[Path, str], reponame:str=None):
+def repo_status_to_dict(repodir:Union[Path, str], reponame:str=None, diff:bool=False):
+    """
+
+    :param repodir:
+    :param reponame:
+    :param diff: Add diff string if true and if there are some changes.
+    :return:
+    """
     repodir = Path(repodir)
     if is_git_repo(str(repodir)):
         repo = Repo(str(repodir))

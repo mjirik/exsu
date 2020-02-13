@@ -118,8 +118,8 @@ class Report:
 
         self.actual_row = {}
 
-    def add_table(self):
-        pass
+    # def add_table(self):
+    #     pass
 
     def init(self):
         self.df = pd.DataFrame()
@@ -143,10 +143,24 @@ class Report:
         logger.debug(f"Saved")
         # append_df_to_excel_no_head_processing(filename, self.df)
 
-    def imsave(self, base_fn, arr:np.ndarray, k=50, level=90, level_skimage=40, level_npz=20):
+    def imsave(self, base_fn, arr:np.ndarray, level=90, level_skimage=40, level_npz=20, k=50):
         """
+        Save image to report dir.
+
+        * The usual way is to use matplotlib to produce grayscale colored images with no\
+        additional stuff (like axes).
+
+        * The alternative is to skimage to produce real grayscale. The\
+        intensity values can easily overflow the uint8 range. It can be controled by the
+        parameter 'k'.
+
+        * The RAW data can be stored into .npz file format.
+
         :param base_fn: with a format slot for annotation id like "skeleton_{}.png"
-        :param arr:
+        :param arr: numpy array with input data
+        :param level: severity of input
+        :param level_skimage: severity of input
+        :param k: multiplier applied on input image intensities on skimage save
         :return:
         """
         import skimage.io
@@ -222,7 +236,15 @@ class Report:
     #     if self.save:
     #         self.imsave
 
-    def savefig_and_show(self, base_fn, fig, level=60):
+    def savefig(self, base_fn, level=60):
+        """
+        Save figure with matploglib if severity is high enough.
+        Do not close figure.
+
+        :param base_fn: filename
+        :param level: severity of input data
+        :return:
+        """
         import matplotlib.pyplot as plt
         if self._is_under_level(level):
             filename, ext = op.splitext(base_fn)
@@ -232,10 +254,23 @@ class Report:
                 fn = op.join(self.outputdir, filename + "" + ext)
                 plt.savefig(fn)
                 # self.imgs[base_fn] = [fn]
-            if self.show:
-                plt.show()
-            else:
-                plt.close(fig)
+
+    def savefig_and_show(self, base_fn, fig, level=60):
+        """
+        Save figure with matploglib if severity is high enough and then show if
+        report 'show' parameter is set true.
+
+        :param base_fn: filename
+        :param fig: figure id (used for closing figure if show is false)
+        :param level: severity of input data
+        :return:
+        """
+        import matplotlib.pyplot as plt
+        self.savefig(base_fn, level=level)
+        if self.show:
+            plt.show()
+        else:
+            plt.close(fig)
 
     # def save_np_data(self, base_fn, data, format_args=None, level=60):
     #     if self._is_under_level(level):

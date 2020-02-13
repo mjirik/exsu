@@ -58,4 +58,91 @@ class ReportTest(unittest.TestCase):
         assert (outputdir / fn).exists()
 
 
+    def test_imsave_npz_and_skimage(self):
+        outputdir = Path("./test_report/")
+        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+        if commonsheet.exists():
+            os.remove(commonsheet)
+        fn = "test_image.png"
+        fn_npz = Path("test_image.npz")
+        fn_skimage = Path("test_image_skimage.png")
+        if Path(fn).exists():
+            os.remove(fn)
+        if fn_npz.exists():
+            os.remove(fn_npz)
+        if fn_skimage.exists():
+            os.remove(fn_skimage)
 
+        img = 50 + np.random.rand(100, 100) * 30
+        img[20:60, 20:60] += 100
+        img = img.astype(np.uint8)
+        report = exsu.report.Report(
+            outputdir=outputdir, additional_spreadsheet_fn=commonsheet, level=50)
+        report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
+
+        assert (outputdir / fn).exists()
+        assert (outputdir / fn_npz).exists()
+        assert (outputdir / fn_skimage).exists()
+
+
+    def test_imsave_npz_and_skimage_color(self):
+        outputdir = Path("./test_report/")
+        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+        if commonsheet.exists():
+            os.remove(commonsheet)
+        fn = "test_image_color.png"
+        fn_npz = Path("test_image_color.npz")
+        fn_skimage = Path("test_image_color_skimage.png")
+        if Path(fn).exists():
+            os.remove(fn)
+        if fn_npz.exists():
+            os.remove(fn_npz)
+        if fn_skimage.exists():
+            os.remove(fn_skimage)
+
+        img = 50 + np.random.rand(100, 100, 3) * 30
+        img[20:60, 20:60, 0] += 100
+        img[40:80, 20:60, 1] += 100
+        img[40:60, 40:80, 2] += 100
+        img = img.astype(np.uint8)
+        report = exsu.report.Report(
+            outputdir=outputdir, additional_spreadsheet_fn=commonsheet, level=50)
+        report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
+
+        assert (outputdir / fn).exists()
+        assert (outputdir / fn_npz).exists()
+        assert (outputdir / fn_skimage).exists()
+
+    def test_savefig(self):
+        outputdir = Path("./test_report/")
+        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+        if commonsheet.exists():
+            os.remove(commonsheet)
+        fn = "test_figure.png"
+        # fn_npz = Path("test_figure.npz")
+        # fn_skimage = Path("test_figure.png")
+        if Path(fn).exists():
+            os.remove(fn)
+        # if fn_npz.exists():
+        #     os.remove(fn_npz)
+        # if fn_skimage.exists():
+        #     os.remove(fn_skimage)
+        #
+        img = 50 + np.random.rand(100, 100, 3) * 30
+        img[20:60, 20:60, 0] += 100
+        img[40:80, 20:60, 1] += 100
+        img[40:60, 40:80, 2] += 100
+        img = img.astype(np.uint8)
+        from matplotlib import pyplot as plt
+        report = exsu.report.Report(
+            outputdir=outputdir, additional_spreadsheet_fn=commonsheet, level=50,
+            show=False
+        )
+        fig = plt.figure()
+        plt.imshow(img)
+        report.savefig_and_show(fn, fig=fig)
+        # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
+
+        assert (outputdir / fn).exists()
+        # assert (outputdir / fn_npz).exists()
+        # assert (outputdir / fn_skimage).exists()
