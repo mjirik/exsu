@@ -142,17 +142,17 @@ class ReportTest(unittest.TestCase):
             # show=False
         )
         report.set_save(True)
-        report.set_save(True)
+        report.set_show(False)
         fig = plt.figure()
         report.savefig_and_show(fn_noext, fig=fig)
-        plt.close() # probably not necessary
+        plt.close(fig) # probably not necessary
 
         # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
 
         assert (outputdir / fn).exists()
 
         # test another function saving as figure
-        report.imsave_as_fig(fn_as_figure)
+        report.imsave_as_fig(fn_as_figure, img)
         assert (outputdir / fn_as_figure).exists()
         # assert (outputdir / fn_npz).exists()
         # assert (outputdir / fn_skimage).exists()
