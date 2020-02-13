@@ -122,6 +122,7 @@ class ReportTest(unittest.TestCase):
         fn = "test_figure.png"
 
         fn_as_figure = "test_figure.png"
+        fn_as_figure_npz = "test_figure.npz"
         # fn_npz = Path("test_figure.npz")
         # fn_skimage = Path("test_figure.png")
         if Path(fn).exists():
@@ -138,7 +139,7 @@ class ReportTest(unittest.TestCase):
         img = img.astype(np.uint8)
         from matplotlib import pyplot as plt
         report = exsu.report.Report(
-            outputdir=outputdir, additional_spreadsheet_fn=commonsheet, level=50
+            outputdir=outputdir, additional_spreadsheet_fn=commonsheet, level="debug" # warning = 10
             # show=False
         )
         report.set_save(True)
@@ -154,5 +155,6 @@ class ReportTest(unittest.TestCase):
         # test another function saving as figure
         report.imsave_as_fig(fn_as_figure, img)
         assert (outputdir / fn_as_figure).exists()
+        assert (outputdir / fn_as_figure_npz).exists()
         # assert (outputdir / fn_npz).exists()
         # assert (outputdir / fn_skimage).exists()
