@@ -127,11 +127,10 @@ class ReportTest(unittest.TestCase):
         # fn_skimage = Path("test_figure.png")
         if Path(fn).exists():
             os.remove(fn)
-        # if fn_npz.exists():
-        #     os.remove(fn_npz)
-        # if fn_skimage.exists():
-        #     os.remove(fn_skimage)
-        #
+        if Path(fn_as_figure).exists():
+            os.remove(fn_as_figure)
+        if Path(fn_as_figure_npz).exists():
+            os.remove(fn_as_figure_npz)
         img = 50 + np.random.rand(100, 100, 3) * 30
         img[20:60, 20:60, 0] += 100
         img[40:80, 20:60, 1] += 100
