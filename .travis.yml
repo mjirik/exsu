@@ -76,6 +76,6 @@ install:
 # script: nosetests -v --with-coverage --cover-package=exsu
 
 script:
-  - python -m pytest --cov=exsu/
+  - python -m pytest --cov=exsu/ -v
 after_success:
     - coveralls
