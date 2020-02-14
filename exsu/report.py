@@ -281,16 +281,22 @@ class Report:
     #         self.imgs[base_fn] = fn
 
     def _is_under_level(self, level):
-        return self._level_numeric_value(self.level) < self._level_numeric_value(level)
+        return level_numeric_value(self.level) < level_numeric_value(level)
 
-    def _level_numeric_value(level):
-        if level is "debug":
-            level = 10
-        elif level is "info":
-            level = 30
-        elif level is "warning":
-            level = 50
-        return level
+
+def level_numeric_value(level):
+    """
+    Convert string levels like 'debug' to number.
+    :param level:
+    :return:
+    """
+    if level is "debug":
+        level = 10
+    elif level is "info":
+        level = 30
+    elif level is "warning":
+        level = 50
+    return level
 
 
 
