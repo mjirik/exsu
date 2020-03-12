@@ -1,6 +1,12 @@
 # Changelog
 
 
+
+## Version 0.4.
+
+ * [Added] Added functions for work with parameters
+ * [Added] Added icon cration function
+
 ## Version 0.3.
 
  * [Added] More function to save image and figure. 
