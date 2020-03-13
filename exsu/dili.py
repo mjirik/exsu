@@ -15,7 +15,8 @@ from collections import Mapping, Set, Sequence
 
 # dual python 2/3 compatability, inspired by the "six" library
 string_types = (str) if str is bytes else (str, bytes)
-iteritems = lambda mapping: getattr(mapping, 'iteritems', mapping.items)()
+iteritems = lambda mapping: getattr(mapping, "iteritems", mapping.items)()
+
 
 def get_default_kwargs(obj):
     if "__init__" in dir(obj):
@@ -47,8 +48,9 @@ def subdict(dct, keys):
     return p
 
 
-def list_filter(lst, startswith=None, notstartswith=None,
-                contain=None, notcontain=None):
+def list_filter(
+    lst, startswith=None, notstartswith=None, contain=None, notcontain=None
+):
     """ Keep in list items according to filter parameters.
 
     :param lst: item list
@@ -199,6 +201,7 @@ def list_contains(list_of_strings, substring, return_true_false_array=False):
     if return_true_false_array:
         return key_tf
     from itertools import compress
+
     keys_to_remove = list(compress(list_of_strings, key_tf))
     return keys_to_remove
 
@@ -284,8 +287,11 @@ def sort_list_of_dicts(lst_of_dct, keys, reverse=False, **sort_args):
         keys = [keys]
     # dcmdir = lst_of_dct[:]
     # lst_of_dct.sort(key=lambda x: [x[key] for key in keys], reverse=reverse, **sort_args)
-    lst_of_dct.sort(key=lambda x: [((False, x[key]) if key in x else (True, 0)) for key in keys], reverse=reverse,
-                    **sort_args)
+    lst_of_dct.sort(
+        key=lambda x: [((False, x[key]) if key in x else (True, 0)) for key in keys],
+        reverse=reverse,
+        **sort_args
+    )
     return lst_of_dct
 
 
@@ -317,6 +323,7 @@ def find_in_list_of_lists(list_of_lists, value):
         if value in lst:
             return i
     return None
+
 
 # def struct_to_yaml(cfg):
 #     """
@@ -361,7 +368,7 @@ def objwalk(obj, path=(), memo=None):
 
 def find_value_in_struct(structure, value):
     for pth, obj in objwalk(structure):
-        #a.append([type(pth), pth])
+        # a.append([type(pth), pth])
         if obj == value:
             return pth, obj
 
@@ -381,7 +388,7 @@ def find_in_struct(structure, keys):
     else:
         keys = [keys]
     for pth, obj in objwalk(structure):
-        #a.append([type(pth), pth])
+        # a.append([type(pth), pth])
         all_keys_found = True
         for key in keys:
             if key in pth:

@@ -5,6 +5,7 @@ from loguru import logger
 import unittest
 
 from PyQt5.QtWidgets import QApplication, QFileDialog
+
 # import openslide
 import pyqtgraph.parametertree
 from pyqtgraph.parametertree import Parameter, ParameterTree
@@ -28,7 +29,6 @@ class ParameterTest(unittest.TestCase):
 
     def test_export_to_dict(self):
         params = [
-
             {
                 "name": "Example Integer Param",
                 "type": "int",
@@ -51,8 +51,8 @@ class ParameterTest(unittest.TestCase):
                 "children": [
                     {"name": "sub 1", "value": 1, "type": "int"},
                     {"name": "sub 2", "value": 2, "type": "float"},
-                ]
-            }
+                ],
+            },
         ]
 
         parameters = Parameter.create(
@@ -69,10 +69,8 @@ class ParameterTest(unittest.TestCase):
 
         assert "subparam;sub 1" in dct
 
-
     def test_find_in_struct(self):
         params = [
-
             {
                 "name": "Example Integer Param",
                 "type": "int",
@@ -93,10 +91,10 @@ class ParameterTest(unittest.TestCase):
                 "name": "subparam",
                 "type": "group",
                 "children": [
-                    {"name": "sub 1", "value": 1, "type": "int" },
+                    {"name": "sub 1", "value": 1, "type": "int"},
                     {"name": "sub 2", "value": 2, "type": "float"},
-                ]
-            }
+                ],
+            },
         ]
 
         parameters = Parameter.create(
@@ -112,24 +110,26 @@ class ParameterTest(unittest.TestCase):
         found = dili.find_in_struct(dct, "Example Float Param")
         assert found is not None
 
-
     def test_pyqtgraph_import_ordered_dict_and_back_again(self):
         cfg = collections.OrderedDict(
-            [["bool", True],
-             ["int", 5],
-             ['str', 'strdrr'],
-             ['vs', [1.0, 2.5, 7]],
-             ]
+            [["bool", True], ["int", 5], ["str", "strdrr"], ["vs", [1.0, 2.5, 7]],]
         )
         captions = {"int": "toto je int"}
         pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
 
-        p = pyqtgraph.parametertree.Parameter.create(name="main", type="group", children=[pg_struct])
+        p = pyqtgraph.parametertree.Parameter.create(
+            name="main", type="group", children=[pg_struct]
+        )
         assert type(p) == pyqtgraph.parametertree.parameterTypes.GroupParameter
         logger.debug(pg_struct)
         self.assertDictEqual(
             pg_struct["children"][0],
-            {'type': 'bool', 'name': 'bool', 'value': True, "reconstruction_type": "bool"}
+            {
+                "type": "bool",
+                "name": "bool",
+                "value": True,
+                "reconstruction_type": "bool",
+            },
         )
         name_new, cfg_new = ptools.from_pyqtgraph_struct(pg_struct)
         assert "bool" in cfg_new
@@ -138,8 +138,8 @@ class ParameterTest(unittest.TestCase):
         cfg = {
             "bool param": True,
             "int param": 5,
-            'str param': 'strdrr',
-            'vs': [1.0, 2.5, 7],
+            "str param": "strdrr",
+            "vs": [1.0, 2.5, 7],
             # "ndarr param": np.asarray([[1,2], [3,4]])
         }
         captions = {"int": "toto je int"}
@@ -147,9 +147,18 @@ class ParameterTest(unittest.TestCase):
         logger.debug(pg_struct)
         self.assertDictEqual(
             pg_struct["children"][0],
-            {'type': 'bool', 'name': 'bool param', 'value': True, "reconstruction_type": "bool"}
+            {
+                "type": "bool",
+                "name": "bool param",
+                "value": True,
+                "reconstruction_type": "bool",
+            },
         )
-        p = pyqtgraph.parametertree.Parameter.create(name=pg_struct["name"], type=pg_struct["type"], children=pg_struct["children"])
+        p = pyqtgraph.parametertree.Parameter.create(
+            name=pg_struct["name"],
+            type=pg_struct["type"],
+            children=pg_struct["children"],
+        )
         assert type(p) == pyqtgraph.parametertree.parameterTypes.GroupParameter
         pg_struct2 = p.saveState()
 
@@ -160,55 +169,39 @@ class ParameterTest(unittest.TestCase):
 
     # @pytest.mark.interactive
     def test_dict_to_pyqtgraph_with_options(self):
-        cfg = collections.OrderedDict({
-            "bool": True,
-            "int": 5,
-            "expected_float": 2,
-            'str': 'strdrr',
-            'vs': [1.0, 2.5, 7]
-            # 'Area Sampling' : dictwidgetpyqtgraph.AreaSamplingParameter(name='Area Sampling')
-        })
+        cfg = collections.OrderedDict(
+            {
+                "bool": True,
+                "int": 5,
+                "expected_float": 2,
+                "str": "strdrr",
+                "vs": [1.0, 2.5, 7]
+                # 'Area Sampling' : dictwidgetpyqtgraph.AreaSamplingParameter(name='Area Sampling')
+            }
+        )
         captions = {"int": "toto je int"}
 
         opts = {}
         opts = {
             "children": {
                 "vs": {
-                    "title": 'voxelsize',
+                    "title": "voxelsize",
                     "children": {
-                        "0": {
-                            "title": "z",
-                            'suffix': 'm',
-                            'siPrefix': True
-                        },
-                        "1": {
-                            "title": "x",
-                            'suffix': 'm',
-                            'siPrefix': True
-                        },
-                        "2": {
-                            "title": "y",
-                            'suffix': 'm',
-                            'siPrefix': True
-                        }
-                    }
+                        "0": {"title": "z", "suffix": "m", "siPrefix": True},
+                        "1": {"title": "x", "suffix": "m", "siPrefix": True},
+                        "2": {"title": "y", "suffix": "m", "siPrefix": True},
+                    },
                 },
-                "expected_float": {
-                    "type": "float",
-                    "title": "Exp. float"
-                }
+                "expected_float": {"type": "float", "title": "Exp. float"},
             }
         }
 
-
-        params = ptools.to_pyqtgraph_struct('params', cfg, opts=opts)
-        params['children'].append(
-            ptools.AreaSamplingParameter(name='Area Sampling'))
+        params = ptools.to_pyqtgraph_struct("params", cfg, opts=opts)
+        params["children"].append(ptools.AreaSamplingParameter(name="Area Sampling"))
         # logger.debug(params)
 
         # params[0]['title'] = "Pokusny title"
         # params[0]['my note'] = "poznamka"
-
 
         p = Parameter.create(**params)
         # p = Parameter.create(name='params', type='group', children=params)
@@ -218,7 +211,7 @@ class ParameterTest(unittest.TestCase):
         vals = p.getValues()
 
         name, dict_again = ptools.from_pyqtgraph_struct(lst)
-        assert name == 'params'
+        assert name == "params"
         assert "expected_float" in dict_again
         assert dict_again["expected_float"] == 2.0
         t.setParameters(p, showTop=False)
@@ -239,19 +232,26 @@ class ParameterTest(unittest.TestCase):
         cfg = {
             "bool": True,
             "int": 5,
-            'str': 'strdrr',
-            'vs': [1.0, 2.5, 7],
-            'data': {"complex":{"real": 1.0, "imag":0.5}},
-            "real": 1.1
+            "str": "strdrr",
+            "vs": [1.0, 2.5, 7],
+            "data": {"complex": {"real": 1.0, "imag": 0.5}},
+            "real": 1.1,
         }
         captions = {"int": "toto je int"}
         pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
         logger.debug(pg_struct)
         self.assertDictEqual(
             pg_struct["children"][0],
-            {'type': 'bool', 'name': 'bool', 'value': True, "reconstruction_type": "bool"}
+            {
+                "type": "bool",
+                "name": "bool",
+                "value": True,
+                "reconstruction_type": "bool",
+            },
         )
-        p = pyqtgraph.parametertree.Parameter.create(name="main", type="group", children=[pg_struct])
+        p = pyqtgraph.parametertree.Parameter.create(
+            name="main", type="group", children=[pg_struct]
+        )
         assert type(p) == pyqtgraph.parametertree.parameterTypes.GroupParameter
 
         params0 = ptools.find_parameter_path_by_fragment(p, "vs")
@@ -274,18 +274,21 @@ class ParameterTest(unittest.TestCase):
 
     def test_set_and_get_param_by_path(self):
 
-
         cfg = {
             "bool": True,
             "int": 5,
-            'str': 'strdrr',
-            'vs': [1.0, 2.5, 7],
-            'data': {"complex": {"real": 1.0, "imag": 0.5}},
-            "real": 1.1
+            "str": "strdrr",
+            "vs": [1.0, 2.5, 7],
+            "data": {"complex": {"real": 1.0, "imag": 0.5}},
+            "real": 1.1,
         }
         captions = {"int": "toto je int"}
         pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
-        p = pyqtgraph.parametertree.Parameter.create(name=pg_struct["name"], type=pg_struct["type"], children=pg_struct["children"])
+        p = pyqtgraph.parametertree.Parameter.create(
+            name=pg_struct["name"],
+            type=pg_struct["type"],
+            children=pg_struct["children"],
+        )
         pths = ptools.find_parameter_path_by_fragment(p, "real")
         ptools.set_parameter_by_path(p, pths[0], 10)
 
@@ -293,7 +296,5 @@ class ParameterTest(unittest.TestCase):
         pths_and_vals = list(zip(pths, [20, 30]))
         ptools.set_parameters_by_path(p, pths_and_vals)
 
-
         assert p.param("real").value() in [20, 30]
         assert p.param("data", "complex", "real").value() in [20, 30]
-

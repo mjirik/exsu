@@ -15,7 +15,7 @@ def test_get_fcn_params():
     def test_fcn(a, b, c=1, d=2):
         return a + b + c
 
-    class MyTestObj():
+    class MyTestObj:
         def __init__(self, oa, ob, oc=1, od=2):
             pass
 
@@ -24,53 +24,24 @@ def test_get_fcn_params():
     argso = dili.get_default_kwargs(MyTestObj)
     argsi = dili.get_default_kwargs(myobj)
     logger.debug(f"argsf: {argsf}")
-    assert argsf['c'] == 1
-    assert argso['oc'] == 1
-    assert argsi['oc'] == 1
+    assert argsf["c"] == 1
+    assert argso["oc"] == 1
+    assert argsi["oc"] == 1
+
 
 class DictListTestCase(unittest.TestCase):
     def generate_dict_data(self):
-        data = {
-            'a': 1,
-            'b': 2,
-            'c': {
-                'aa': 11,
-                'bb': 22,
-                'cc': {
-                    'aaa': 111
-                }
-            }
-        }
+        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": 111}}}
         return data
 
     def test_ditc_flatten(self):
-        data = {
-            'a': 1,
-            'b': 2,
-            'c': {
-                'aa': 11,
-                'bb': 22,
-                'cc': {
-                    'aaa': 111
-                }
-            }
-        }
+        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": 111}}}
         dct = dili.flatten_dict(data)
         dct = dict(dct)
         self.assertIn("cccaaa", dct.keys())
 
     def test_dict_flatten_with_separator(self):
-        data = {
-            'a': 1,
-            'b': 2,
-            'c': {
-                'aa': 11,
-                'bb': 22,
-                'cc': {
-                    'aaa': 111
-                }
-            }
-        }
+        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": 111}}}
         dct = dili.flatten_dict(data, separator=";")
         dct = dict(dct)
         self.assertIn("c;cc;aaa", dct.keys())
@@ -103,7 +74,7 @@ class DictListTestCase(unittest.TestCase):
         # self.assertIn("c", c.keys())
 
     def test_split_dict_ordered(self):
-        data = OrderedDict([('pear', 1), ('orange', 2), ('banana', 3), ('apple', 4)])
+        data = OrderedDict([("pear", 1), ("orange", 2), ("banana", 3), ("apple", 4)])
         ab, c = dili.split_dict(data, ["pear", "banana"])
         self.assertIn("pear", ab.keys())
         self.assertIn("banana", ab.keys())
@@ -170,7 +141,7 @@ class DictListTestCase(unittest.TestCase):
 
         od = OrderedDict()
         od["klkj"] = 1
-        od["here is dict"] = {'s': 1, 1: 17}
+        od["here is dict"] = {"s": 1, 1: 17}
         od["list"] = ["uuu", 146, ["sdf", 18]]
         od2 = OrderedDict()
         od2["as"] = 1
@@ -183,7 +154,14 @@ class DictListTestCase(unittest.TestCase):
     def test_drop_duplicates(self):
         import pandas as pd
 
-        df = pd.DataFrame({"col1": [5, 5, 1], "col2": [2, 2, 3], "time1": [1, 7, 9], "time2": [9, 7, 5]})
+        df = pd.DataFrame(
+            {
+                "col1": [5, 5, 1],
+                "col2": [2, 2, 3],
+                "time1": [1, 7, 9],
+                "time2": [9, 7, 5],
+            }
+        )
         dfn = dili.df_drop_duplicates(df, "time")
         # self.assertEqual(len(dfn.keys()), 2)
         self.assertEqual(len(dfn), 2)
@@ -200,10 +178,10 @@ class DictListTestCase(unittest.TestCase):
         struct = {
             "bool": True,
             "int": 5,
-            'str': 'strdrr',
-            'vs': [1.0, 2.5, 7],
-            'data': {"complex":{"real": 1.0, "imag":0.5}},
-            "real": 1.1
+            "str": "strdrr",
+            "vs": [1.0, 2.5, 7],
+            "data": {"complex": {"real": 1.0, "imag": 0.5}},
+            "real": 1.1,
         }
 
         dfn = dili.find_value_in_struct(struct, 5)
@@ -215,10 +193,10 @@ class DictListTestCase(unittest.TestCase):
         struct = {
             "bool": True,
             "int": 5,
-            'str': 'strdrr',
-            'vs': [1.0, 2.5, 7],
-            'data': {"complex":{"real": 1.0, "imag":0.5}},
-            "real": 1.1
+            "str": "strdrr",
+            "vs": [1.0, 2.5, 7],
+            "data": {"complex": {"real": 1.0, "imag": 0.5}},
+            "real": 1.1,
         }
 
         dfn = dili.find_in_struct(struct, "bool")
@@ -236,8 +214,6 @@ class DictListTestCase(unittest.TestCase):
 
         dili.set_in_struct(struct, dfn, 10)
         assert struct["data"]["complex"]["real"] == 10
-
-
 
 
 def main():

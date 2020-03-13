@@ -17,15 +17,15 @@ from . import git_tools
 
 class Report:
     def __init__(
-            self,
-            outputdir=None,
-            additional_spreadsheet_fn=None,
-            level=50,
-            save=True,
-            show=True,
-            debug=False,
-            repodir=None,
-            reponame=None,
+        self,
+        outputdir=None,
+        additional_spreadsheet_fn=None,
+        level=50,
+        save=True,
+        show=True,
+        debug=False,
+        repodir=None,
+        reponame=None,
     ):
         """
 
@@ -39,8 +39,7 @@ class Report:
         """
         # self.outputdir = op.expanduser(outputdir)
 
-
-        self.df:pd.DataFrame = None
+        self.df: pd.DataFrame = None
         self.imgs = {}
         self.actual_row = {}
         self.show = show
@@ -49,7 +48,7 @@ class Report:
         self.level = level
         self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
-        self.persistent_cols:dict = {}
+        self.persistent_cols: dict = {}
         # self.repos = []
 
         if outputdir is not None:
@@ -60,13 +59,12 @@ class Report:
         if repodir is not None:
             self.add_repo(repodir, reponame)
 
-    def add_repo(self, repodir:Union[Path, str], reponame:str=None):
+    def add_repo(self, repodir: Union[Path, str], reponame: str = None):
         # self.repos.push((repodir, reponame))
         repo_cols = git_tools.repo_status_to_dict(repodir, reponame)
         self.set_persistent_cols(repo_cols)
 
-
-    def set_persistent_cols(self, dct:dict, clear:bool=False):
+    def set_persistent_cols(self, dct: dict, clear: bool = False):
         """
         Set data which will be appended to all rows.
         :param dct: dictionary with column name and value
@@ -104,17 +102,19 @@ class Report:
         data.update(self.persistent_cols)
 
         df = pd.DataFrame([list(data.values())], columns=list(data.keys()))
-        logger.debug(f"Unique values types {np.unique(map(str, map(type, data.values())))}")
+        logger.debug(
+            f"Unique values types {np.unique(map(str, map(type, data.values())))}"
+        )
         self.df = self.df.append(df, ignore_index=True)
 
-            # if excel_path.exists():
-            #     print("append to excel")
-            #
-            # else:
-            #
-            #     # writer = pd.ExcelWriter(filename, engine='openpyxl')
-            #     df.to_excel(filename)
-            #     print("create new excel")
+        # if excel_path.exists():
+        #     print("append to excel")
+        #
+        # else:
+        #
+        #     # writer = pd.ExcelWriter(filename, engine='openpyxl')
+        #     df.to_excel(filename)
+        #     print("create new excel")
 
         self.actual_row = {}
 
@@ -143,7 +143,9 @@ class Report:
         logger.debug(f"Saved")
         # append_df_to_excel_no_head_processing(filename, self.df)
 
-    def imsave(self, base_fn, arr:np.ndarray, level=90, level_skimage=40, level_npz=20, k=50):
+    def imsave(
+        self, base_fn, arr: np.ndarray, level=90, level_skimage=40, level_npz=20, k=50
+    ):
         """
         Save image to report dir.
 
@@ -166,11 +168,12 @@ class Report:
         import skimage.io
 
         filename, ext = op.splitext(base_fn)
-        if ext == '':
+        if ext == "":
             ext = ".png"
         if self.save:
             if self._is_under_level(level):
                 import matplotlib.pyplot as plt
+
                 fn = op.join(self.outputdir, filename + ext)
                 logger.debug(f"write to file: {fn}")
                 plt.imsave(fn, arr)
@@ -185,7 +188,7 @@ class Report:
             if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
 
-    def _save_arr(self, base_fn, arr:np.ndarray):
+    def _save_arr(self, base_fn, arr: np.ndarray):
         """
         Save ndarray to file and store file path to list
         :param base_fn:
@@ -219,6 +222,7 @@ class Report:
         filename, ext = op.splitext(base_fn)
         if self._is_under_level(level):
             import matplotlib.pyplot as plt
+
             fig = plt.figure()
             plt.imshow(arr)
             plt.colorbar()
@@ -246,10 +250,11 @@ class Report:
         :return:
         """
         import matplotlib.pyplot as plt
+
         if self._is_under_level(level):
             filename, ext = op.splitext(base_fn)
-            if ext == '':
-                ext = '.png'
+            if ext == "":
+                ext = ".png"
             if self.save:
                 fn = op.join(self.outputdir, filename + "" + ext)
                 plt.savefig(fn)
@@ -266,6 +271,7 @@ class Report:
         :return:
         """
         import matplotlib.pyplot as plt
+
         self.savefig(base_fn, level=level)
         if self.show:
             plt.show()
@@ -299,11 +305,14 @@ def level_numeric_value(level):
     return level
 
 
-
-
-def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
-                       truncate_sheet=False,
-                       **to_excel_kwargs):
+def append_df_to_excel(
+    filename,
+    df,
+    sheet_name="Sheet1",
+    startrow=None,
+    truncate_sheet=False,
+    **to_excel_kwargs,
+):
     """
     Append a DataFrame [df] to existing Excel file [filename]
     into [sheet_name] Sheet.
@@ -331,10 +340,10 @@ def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
     # from openpyxl import load_workbook
 
     import pandas as pd
+
     filename = Path(filename)
     if filename.exists():
         # writer = pd.ExcelWriter(filename, engine='openpyxl')
-
 
         dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
@@ -345,11 +354,10 @@ def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
         #     dfcombine = dfold.append(df, ignore_index=True)
         #     dfcombine.to_excel(str(filename), sheet_name=sheet_name)
         # except PermissionError as e:
-            # print("File is opened in other application")
-            # import xlwings as xw
-            # sht = xw.Book(str(filename)).sheets[0]
-            # sht.range('A1').expand().options(pd.DataFrame).value
-
+        # print("File is opened in other application")
+        # import xlwings as xw
+        # sht = xw.Book(str(filename)).sheets[0]
+        # sht.range('A1').expand().options(pd.DataFrame).value
 
     else:
         filename.parent.mkdir(parents=True, exist_ok=True)

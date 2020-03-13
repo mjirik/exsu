@@ -10,9 +10,11 @@ import ast
 
 
 def create_icon(
-    app_name: str, icon_filename=None, conda_env_name=None, package_name=None,
-        dry_run=False
-
+    app_name: str,
+    icon_filename=None,
+    conda_env_name=None,
+    package_name=None,
+    dry_run=False,
 ):
     """
 

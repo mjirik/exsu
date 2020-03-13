@@ -41,7 +41,7 @@ def params_and_values(
 
 
 def find_parameter_path_by_fragment(
-        p: pyqtgraph.parametertree.Parameter, fragment, pth=None, dct={}, separator=";"
+    p: pyqtgraph.parametertree.Parameter, fragment, pth=None, dct={}, separator=";"
 ):
     """
     Get list of paths of all parameters where path contain a fragment.
@@ -59,13 +59,12 @@ def find_parameter_path_by_fragment(
         fnd = param_pth.find(fragment)
         if fnd >= 0:
             # check if it is begining of parameter name
-            if (fnd == 0) or (param_pth[fnd-1] == separator):
+            if (fnd == 0) or (param_pth[fnd - 1] == separator):
                 fnd += len(fragment)
                 # check the end of fragment
                 if (fnd == (len(param_pth))) or (param_pth[fnd] == separator):
                     params.add(param_pth[:fnd])
     return list(params)
-
 
     # for name in p.getValues():
     #     # print(f"name: {name}, type {type(name)}")
@@ -86,10 +85,10 @@ def find_parameter_path_by_fragment(
 
 
 def set_parameters_by_path(
-        parameters: pyqtgraph.parametertree.Parameter,
-        path_val_couple_list: List,
-        parse_path=True,
-        separator=";",
+    parameters: pyqtgraph.parametertree.Parameter,
+    path_val_couple_list: List,
+    parse_path=True,
+    separator=";",
 ):
     """
     Set value to parameter.
@@ -117,11 +116,11 @@ def set_parameters_by_path(
 
 
 def set_parameter_by_path(
-        parameters: pyqtgraph.parametertree.Parameter,
-        param_path: str,
-        value,
-        parse_path=True,
-        separator=";",
+    parameters: pyqtgraph.parametertree.Parameter,
+    param_path: str,
+    value,
+    parse_path=True,
+    separator=";",
 ):
     """
     Set value to parameter.
@@ -134,16 +133,16 @@ def set_parameter_by_path(
         parameters=parameters,
         param_path=param_path,
         parse_path=parse_path,
-        separator=separator
+        separator=separator,
     )
     p.setValue(value)
 
 
 def get_parameter_by_path(
-        parameters: pyqtgraph.parametertree.Parameter,
-        param_path: str,
-        parse_path=True,
-        separator=";",
+    parameters: pyqtgraph.parametertree.Parameter,
+    param_path: str,
+    parse_path=True,
+    separator=";",
 ):
 
     """
@@ -176,8 +175,16 @@ def to_pyqtgraph_struct(name, value, opts={}):
         tp = value.__class__.__name__
 
     if tp in (
-            'list', 'ndarray', 'OrderedDict', 'dict',
-            'int', 'float', 'bool', 'str', 'color', 'colormap'
+        "list",
+        "ndarray",
+        "OrderedDict",
+        "dict",
+        "int",
+        "float",
+        "bool",
+        "str",
+        "color",
+        "colormap",
     ):
         pass
     else:
@@ -185,31 +192,33 @@ def to_pyqtgraph_struct(name, value, opts={}):
         return value
     item_properties = {
         "name": name,
-        'value': value,
-        'type': tp,
+        "value": value,
+        "type": tp,
     }
     # if key in params.keys():
 
     children_properties = {}
     if "children" in opts.keys():
-        children_properties = opts.pop('children')
+        children_properties = opts.pop("children")
     item_properties.update(opts)
-    item_properties['reconstruction_type'] = tp
+    item_properties["reconstruction_type"] = tp
 
-
-    if tp in ('list', 'ndarray', 'OrderedDict', 'dict'):
+    if tp in ("list", "ndarray", "OrderedDict", "dict"):
 
         # key_parameters['type'] = key_parameters['type']
-        item_properties['type'] = 'group'
-        item_properties.pop('value')
-        if tp == 'list':
-            children_key_value = collections.OrderedDict(zip(map(str, range(len(value))), value))
-        elif (tp == 'ndarray'):
+        item_properties["type"] = "group"
+        item_properties.pop("value")
+        if tp == "list":
+            children_key_value = collections.OrderedDict(
+                zip(map(str, range(len(value))), value)
+            )
+        elif tp == "ndarray":
             value_list = value.to_list()
-            children_key_value = collections.OrderedDict(zip(map(str, range(len(value_list))), value_list))
-        elif tp in ('dict', 'OrderedDict'):
+            children_key_value = collections.OrderedDict(
+                zip(map(str, range(len(value_list))), value_list)
+            )
+        elif tp in ("dict", "OrderedDict"):
             children_key_value = value
-
 
         children_list = []
         for keyi, vali in children_key_value.items():
@@ -219,7 +228,7 @@ def to_pyqtgraph_struct(name, value, opts={}):
             children_item = to_pyqtgraph_struct(keyi, vali, children_properties_i)
             children_list.append(children_item)
 
-        item_properties['children'] = children_list
+        item_properties["children"] = children_list
 
         # value = value_list
         # logger.debug(key_parameters)
@@ -234,37 +243,37 @@ def from_pyqtgraph_struct(dct):
     :return:
     """
     output = {}
-    key = dct['name']
-    if 'children' in dct.keys():
-        reconstruction_type = 'dict'
+    key = dct["name"]
+    if "children" in dct.keys():
+        reconstruction_type = "dict"
 
-        if 'reconstruction_type' in dct.keys():
-            reconstruction_type = dct['reconstruction_type']
+        if "reconstruction_type" in dct.keys():
+            reconstruction_type = dct["reconstruction_type"]
 
-        if reconstruction_type in ('list', 'ndarray'):
+        if reconstruction_type in ("list", "ndarray"):
             children_list = []
-            for child in dct['children']:
-                if reconstruction_type == 'dict':
-                    child_item = dct['children'][child] # ok for line 214
+            for child in dct["children"]:
+                if reconstruction_type == "dict":
+                    child_item = dct["children"][child]  # ok for line 214
                 elif type(dct["children"]) is collections.OrderedDict:
-                    child_item = dct['children'][child]  # ok for line 214 and type
+                    child_item = dct["children"][child]  # ok for line 214 and type
                 else:
                     child_item = child
                 keyi, valuei = from_pyqtgraph_struct(child_item)
                 children_list.append(valuei)
             value = children_list
 
-        elif reconstruction_type in ('dict', 'OrderedDict'):
+        elif reconstruction_type in ("dict", "OrderedDict"):
             children_dict = {}
-            for child in dct['children']:
-                if (reconstruction_type == 'OrderedDict'):
+            for child in dct["children"]:
+                if reconstruction_type == "OrderedDict":
                     if type(dct["children"]) is list:
                         child_item = child
                     else:
-                        child_item = dct['children'][child]  # ok for line 214 and type
+                        child_item = dct["children"][child]  # ok for line 214 and type
                 else:
                     if type(dct["children"]) is collections.OrderedDict:
-                        child_item = dct['children'][child]  # ok for line 214 and type
+                        child_item = dct["children"][child]  # ok for line 214 and type
                     else:
                         child_item = child
                 keyi, valuei = from_pyqtgraph_struct(child_item)
@@ -272,9 +281,10 @@ def from_pyqtgraph_struct(dct):
             value = children_dict
 
     else:
-        value = dct['value']
+        value = dct["value"]
 
     return key, value
+
 
 # def find_in_structure(structure, key=None, value=None):
 #     if type(structure) == list:
@@ -290,7 +300,6 @@ def from_pyqtgraph_struct(dct):
 #             fnd = find_in_structure()
 
 
-
 class ListParameter(pTypes.GroupParameter):
     """
     New keywords
@@ -300,28 +309,24 @@ class ListParameter(pTypes.GroupParameter):
     """
 
     def __init__(self, **opts):
-        values = opts.pop('value')
-        parent_opts = {
-            'name': opts.pop('name'),
-            'type': 'bool',
-            'value': values
-        }
-        if 'title' in opts.keys():
-            parent_opts['title'] = opts.pop('title')
+        values = opts.pop("value")
+        parent_opts = {"name": opts.pop("name"), "type": "bool", "value": values}
+        if "title" in opts.keys():
+            parent_opts["title"] = opts.pop("title")
         if "reconstruction_type" in opts.keys():
-            parent_opts['reconstruction_type'] = opts.pop('reconstruction_type')
+            parent_opts["reconstruction_type"] = opts.pop("reconstruction_type")
         # opts['type'] = 'bool'
         # opts['value'] = True
         pTypes.GroupParameter.__init__(self, **parent_opts)
         # gp = pTypes.GroupParameter(name=opts['name'], title=opts['title'])
-        if 'names' in opts.keys():
-            names = opts['names']
+        if "names" in opts.keys():
+            names = opts["names"]
         else:
             names = list(map(str, range(len(values))))
 
         for i in range(len(values)):
-            opts['name'] = names[i]
-            opts['value'] = values[i]
+            opts["name"] = names[i]
+            opts["value"] = values[i]
             self.addChild(opts)
 
         for child in self.childs:
@@ -344,27 +349,45 @@ class ListParameter(pTypes.GroupParameter):
 
 class AreaSamplingParameter(pTypes.GroupParameter):
     def __init__(self, **opts):
-        opts['type'] = 'bool'
-        opts['value'] = True
+        opts["type"] = "bool"
+        opts["value"] = True
         voxelsize_mm = [1.0, 1.0, 1.0]
         areasize_mm = [100.0, 100.0, 100.0]
         areasize_px = [100, 100, 100]
 
         if "voxelsize_mm" in opts.keys():
-            voxelsize_mm = opts.pop('voxelsize_mm')
+            voxelsize_mm = opts.pop("voxelsize_mm")
         if "areasize_mm" in opts.keys():
-            areasize_mm = opts.pop('areasize_mm')
+            areasize_mm = opts.pop("areasize_mm")
         if "areasize_px" in opts.keys():
-            areasize_px = opts.pop('areasize_px')
+            areasize_px = opts.pop("areasize_px")
 
         pTypes.GroupParameter.__init__(self, **opts)
 
-        self.p_voxelsize_mm = ListParameter(name="voxelsize_mm", value=voxelsize_mm, type='float', suffix='mm',
-                                            siPrefix=False, reconstruction_type='list')
-        self.p_areasize_px = ListParameter(name="areasize_px", value=areasize_px, type='int', suffix='px',
-                                           siPrefix=False, reconstruction_type='list')
-        self.p_areasize_mm = ListParameter(name="areasize_mm", value=areasize_mm, type='float', suffix='mm',
-                                           siPrefix=False, reconstruction_type='list')
+        self.p_voxelsize_mm = ListParameter(
+            name="voxelsize_mm",
+            value=voxelsize_mm,
+            type="float",
+            suffix="mm",
+            siPrefix=False,
+            reconstruction_type="list",
+        )
+        self.p_areasize_px = ListParameter(
+            name="areasize_px",
+            value=areasize_px,
+            type="int",
+            suffix="px",
+            siPrefix=False,
+            reconstruction_type="list",
+        )
+        self.p_areasize_mm = ListParameter(
+            name="areasize_mm",
+            value=areasize_mm,
+            type="float",
+            suffix="mm",
+            siPrefix=False,
+            reconstruction_type="list",
+        )
 
         self.addChild(self.p_voxelsize_mm)
         self.addChild(self.p_areasize_mm)
@@ -377,26 +400,34 @@ class AreaSamplingParameter(pTypes.GroupParameter):
         as_m = np.asarray(self.p_areasize_mm.value())
         vs_m = np.asarray(self.p_voxelsize_mm.value()).astype(np.float)
         val = (as_m / vs_m).astype(np.int).tolist()
-        self.p_areasize_px.setValue(
-            val,
-            blockSignal=self.areasize_pxChanged)
+        self.p_areasize_px.setValue(val, blockSignal=self.areasize_pxChanged)
 
     def areasize_pxChanged(self):
-        val = (np.asarray(self.p_voxelsize_mm.value()) * np.asarray(self.p_areasize_px.value())).tolist()
-        self.p_areasize_mm.setValue(
-            val,
-            blockSignal=self.areasize_mChanged)
+        val = (
+            np.asarray(self.p_voxelsize_mm.value())
+            * np.asarray(self.p_areasize_px.value())
+        ).tolist()
+        self.p_areasize_mm.setValue(val, blockSignal=self.areasize_mChanged)
 
     def voxelsizeChanged(self):
-        self.z_size_px.setValue(int(self.z_size_m.value() / self.z_m.value()), blockSignal=self.z_size_pxChanged)
+        self.z_size_px.setValue(
+            int(self.z_size_m.value() / self.z_m.value()),
+            blockSignal=self.z_size_pxChanged,
+        )
 
     # def z_mChanged(self):
     #     self.z_.setValue(1.0 / self.a.value(), blockSignal=self.bChanged)
     def z_size_mChanged(self):
-        self.z_size_px.setValue(int(self.z_size_m.value() / self.z_m.value()), blockSignal=self.z_size_pxChanged)
+        self.z_size_px.setValue(
+            int(self.z_size_m.value() / self.z_m.value()),
+            blockSignal=self.z_size_pxChanged,
+        )
 
     def z_size_pxChanged(self):
-        self.z_size_m.setValue(int(self.z_size_px.value() * self.z_m.value()), blockSignal=self.z_size_mChanged)
+        self.z_size_m.setValue(
+            int(self.z_size_px.value() * self.z_m.value()),
+            blockSignal=self.z_size_mChanged,
+        )
 
         # def aChanged(self):
         #     self.b.setValue(1.0 / self.a.value(), blockSignal=self.bChanged)
@@ -409,27 +440,29 @@ class AreaSamplingParameter(pTypes.GroupParameter):
 ## this group includes a menu allowing the user to add new parameters into its child list
 class ScalableGroup(pTypes.GroupParameter):
     def __init__(self, **opts):
-        opts['type'] = 'group'
-        opts['addText'] = "Add"
-        opts['addList'] = ['str', 'float', 'int']
+        opts["type"] = "group"
+        opts["addText"] = "Add"
+        opts["addList"] = ["str", "float", "int"]
         pTypes.GroupParameter.__init__(self, **opts)
 
     def addNew(self, typ):
-        val = {
-            'str': '',
-            'float': 0.0,
-            'int': 0
-        }[typ]
+        val = {"str": "", "float": 0.0, "int": 0}[typ]
         self.addChild(
-            dict(name="ScalableParam %d" % (len(self.childs) + 1), type=typ, value=val, removable=True, renamable=True))
-
+            dict(
+                name="ScalableParam %d" % (len(self.childs) + 1),
+                type=typ,
+                value=val,
+                removable=True,
+                renamable=True,
+            )
+        )
 
 
 class BatchFileProcessingParameter(pTypes.GroupParameter):
     def __init__(self, **opts):
-        opts['type'] = 'group'
-        opts['addText'] = "Add"
-        {'name': 'Save State', 'type': 'action'},
+        opts["type"] = "group"
+        opts["addText"] = "Add"
+        {"name": "Save State", "type": "action"},
         # opts['addList'] = ['str', 'float', 'int']
         pTypes.GroupParameter.__init__(self, **opts)
 
@@ -440,8 +473,8 @@ class BatchFileProcessingParameter(pTypes.GroupParameter):
         #     'int': 0
         # }[typ]
         from PyQt5 import QtWidgets
-        fname = QtWidgets.QFileDialog.getOpenFileName(None, 'Open file', '')[0]
 
+        fname = QtWidgets.QFileDialog.getOpenFileName(None, "Open file", "")[0]
 
 
 def add_tip(struct, name, tip):
@@ -450,6 +483,7 @@ def add_tip(struct, name, tip):
     pth, objstr = dili.find_in_struct(struct, name)
     obj = dili.pick_from_struct(struct, pth[:-1])
     obj["tip"] = tip
+
 
 def add_tips(struct, names_tips):
     """

@@ -5,11 +5,14 @@ from loguru import logger
 import unittest
 import os
 from pathlib import Path
+
 # import shutil
 import pandas as pd
+
 # import openslide
 import exsu.report
 import exsu.git_tools
+
 
 def test_repo():
     """
@@ -23,6 +26,7 @@ def test_repo():
     rows_git_repo = exsu.git_tools.repo_status_to_dict(repodir=pth1)
     rows_not_git_repo = exsu.git_tools.repo_status_to_dict(repodir=pth2)
     assert len(rows_git_repo) > len(rows_not_git_repo)
+
 
 def test_repo_in_report():
     report = exsu.report.Report(repodir=Path(__file__).parent.parent.resolve())

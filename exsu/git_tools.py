@@ -8,7 +8,9 @@ from typing import Union
 from pathlib import Path
 
 
-def repo_status_to_dict(repodir:Union[Path, str], reponame:str=None, diff:bool=False):
+def repo_status_to_dict(
+    repodir: Union[Path, str], reponame: str = None, diff: bool = False
+):
     """
 
     :param repodir:
