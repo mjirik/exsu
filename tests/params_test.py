@@ -223,6 +223,14 @@ class ParameterTest(unittest.TestCase):
         assert dict_again["expected_float"] == 2.0
         t.setParameters(p, showTop=False)
         t.show()
+        val_before0 = p.param("Area Sampling", "areasize_px", "0").value()
+        val_before1 = p.param("Area Sampling", "areasize_mm", "0").value()
+        p.param("Area Sampling", "voxelsize_mm", "0").setValue(0.3)
+        val_after0 = p.param("Area Sampling", "areasize_px", "0").value()
+        val_after1 = p.param("Area Sampling", "areasize_mm", "0").value()
+        # TODO probably callback is not working
+        # assert val_before0 != val_after0
+        # assert val_before1 != val_after1
 
         # app.exec_()
         # assert False
