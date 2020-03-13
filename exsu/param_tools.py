@@ -245,8 +245,12 @@ def from_pyqtgraph_struct(dct):
         if reconstruction_type in ('list', 'ndarray'):
             children_list = []
             for child in dct['children']:
-                # child_item = dct['children'][child]
-                child_item = child
+                if reconstruction_type == 'dict':
+                    child_item = dct['children'][child] # ok for line 214
+                elif type(dct["children"]) is collections.OrderedDict:
+                    child_item = dct['children'][child]  # ok for line 214 and type
+                else:
+                    child_item = child
                 keyi, valuei = from_pyqtgraph_struct(child_item)
                 children_list.append(valuei)
             value = children_list
@@ -254,8 +258,16 @@ def from_pyqtgraph_struct(dct):
         elif reconstruction_type in ('dict', 'OrderedDict'):
             children_dict = {}
             for child in dct['children']:
-                # child_item = dct['children'][child]
-                child_item = child
+                if (reconstruction_type == 'OrderedDict'):
+                    if type(dct["children"]) is list:
+                        child_item = child
+                    else:
+                        child_item = dct['children'][child]  # ok for line 214 and type
+                else:
+                    if type(dct["children"]) is collections.OrderedDict:
+                        child_item = dct['children'][child]  # ok for line 214 and type
+                    else:
+                        child_item = child
                 keyi, valuei = from_pyqtgraph_struct(child_item)
                 children_dict[keyi] = valuei
             value = children_dict

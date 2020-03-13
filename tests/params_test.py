@@ -4,16 +4,17 @@
 from loguru import logger
 import unittest
 
+from PyQt5.QtWidgets import QApplication, QFileDialog
 # import openslide
 import pyqtgraph.parametertree
 from pyqtgraph.parametertree import Parameter, ParameterTree
 
 from exsu import param_tools as ptools
+from exsu import dili
 import collections
 import pytest
 import sys
 
-from PyQt5.QtWidgets import QApplication, QFileDialog
 
 app = QApplication(sys.argv)
 
@@ -43,6 +44,14 @@ class ParameterTest(unittest.TestCase):
                 "siPrefix": True,
                 "tip": "Value defines size of something",
             },
+            {
+                "name": "subparam",
+                "type": "group",
+                "children": [
+                    {"name": "sub 1", "value": 1, "type": "int"},
+                    {"name": "sub 2", "value": 2, "type": "float"},
+                ]
+            }
         ]
 
         parameters = Parameter.create(
@@ -57,7 +66,7 @@ class ParameterTest(unittest.TestCase):
         dct = ptools.params_and_values(parameters)
         self.assertEqual(type(dct), dict)
 
-        self.assertIn("Output;Directory Path", dct)
+        assert "subparam;sub 1" in dct
 
 
     def test_find_in_struct(self):
@@ -97,9 +106,9 @@ class ParameterTest(unittest.TestCase):
             children=params,
             expanded=False,
         )
-
-        dct = ptools.from_pyqtgraph_struct(parameters.saveState())
-        found = ptools.find_in_struct(dct, "Example Float Param")
+        pgstruct = parameters.saveState()
+        dct = ptools.from_pyqtgraph_struct(pgstruct)
+        found = dili.find_in_struct(dct, "Example Float Param")
         assert found is not None
 
 
@@ -125,9 +134,9 @@ class ParameterTest(unittest.TestCase):
 
     def test_pyqtgraph_import_dict_and_back_again(self):
         cfg = {
-            "bool": True,
-            "int": 5,
-            'str': 'strdrr',
+            "bool param": True,
+            "int param": 5,
+            'str param': 'strdrr',
             'vs': [1.0, 2.5, 7]
         }
         captions = {"int": "toto je int"}
@@ -135,13 +144,16 @@ class ParameterTest(unittest.TestCase):
         logger.debug(pg_struct)
         self.assertDictEqual(
             pg_struct["children"][0],
-            {'type': 'bool', 'name': 'bool', 'value': True, "reconstruction_type": "bool"}
+            {'type': 'bool', 'name': 'bool param', 'value': True, "reconstruction_type": "bool"}
         )
-        p = pyqtgraph.parametertree.Parameter.create(name="main", type="group", children=[pg_struct])
+        p = pyqtgraph.parametertree.Parameter.create(name=pg_struct["name"], type=pg_struct["type"], children=pg_struct["children"])
         assert type(p) == pyqtgraph.parametertree.parameterTypes.GroupParameter
+        pg_struct2 = p.saveState()
 
         name_new, cfg_new = ptools.from_pyqtgraph_struct(pg_struct)
-        assert "bool" in cfg_new
+        name_new2, cfg_new2 = ptools.from_pyqtgraph_struct(pg_struct2)
+        assert "bool param" in cfg_new
+        assert "bool param" in cfg_new2
 
     # @pytest.mark.interactive
     def test_dict_to_pyqtgraph_with_options(self):
@@ -211,7 +223,6 @@ class ParameterTest(unittest.TestCase):
 
         # app.exec_()
         # assert False
-
 
 
     def test_pyqtgraph_find_pth_of_parameter(self):
