@@ -8,3 +8,6 @@ from exsu import app_tools
 
 def test_icon():
     app_tools.create_icon("MyApp", "fn.ico", conda_env_name="super_env")
+
+def test_icon_less_params():
+    app_tools.create_icon("MyApp", "fn")

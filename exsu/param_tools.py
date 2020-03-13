@@ -133,7 +133,6 @@ def set_parameter_by_path(
     p = get_parameter_by_path(
         parameters=parameters,
         param_path=param_path,
-        value=value,
         parse_path=parse_path,
         separator=separator
     )
