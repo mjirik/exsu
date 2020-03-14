@@ -272,33 +272,32 @@ class ParameterTest(unittest.TestCase):
         params4 = ptools.find_parameter_path_by_fragment(p, "data;complex")
         assert len(params4) == 1
 
+
 def test_set_and_get_param_by_path():
 
-        cfg = {
-            "bool": True,
-            "int": 5,
-            "str": "strdrr",
-            "vs": [1.0, 2.5, 7],
-            "data": {"complex": {"real": 1.0, "imag": 0.5}},
-            "real": 1.1,
-        }
-        captions = {"int": "toto je int"}
-        pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
-        p = pyqtgraph.parametertree.Parameter.create(
-            name=pg_struct["name"],
-            type=pg_struct["type"],
-            children=pg_struct["children"],
-        )
-        pths = ptools.find_parameter_path_by_fragment(p, "real")
-        logger.debug(f"p.name={p.name()}")
-        logger.debug(f"pths={pths}")
-        logger.debug(f"pyqtgraph version={pyqtgraph.__version__}")
-        logger.debug(f"pg_struct={pg_struct}")
-        ptools.set_parameter_by_path(p, pths[0], 10)
+    cfg = {
+        "bool": True,
+        "int": 5,
+        "str": "strdrr",
+        "vs": [1.0, 2.5, 7],
+        "data": {"complex": {"real": 1.0, "imag": 0.5}},
+        "real": 1.1,
+    }
+    captions = {"int": "toto je int"}
+    pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
+    p = pyqtgraph.parametertree.Parameter.create(
+        name=pg_struct["name"], type=pg_struct["type"], children=pg_struct["children"],
+    )
+    pths = ptools.find_parameter_path_by_fragment(p, "real")
+    logger.debug(f"p.name={p.name()}")
+    logger.debug(f"pths={pths}")
+    logger.debug(f"pyqtgraph version={pyqtgraph.__version__}")
+    logger.debug(f"pg_struct={pg_struct}")
+    ptools.set_parameter_by_path(p, pths[0], 10)
 
-        assert ptools.get_parameter_by_path(p, pths[0]).value() == 10
-        pths_and_vals = list(zip(pths, [20, 30]))
-        ptools.set_parameters_by_path(p, pths_and_vals)
+    assert ptools.get_parameter_by_path(p, pths[0]).value() == 10
+    pths_and_vals = list(zip(pths, [20, 30]))
+    ptools.set_parameters_by_path(p, pths_and_vals)
 
-        assert p.param("real").value() in [20, 30]
-        assert p.param("data", "complex", "real").value() in [20, 30]
+    assert p.param("real").value() in [20, 30]
+    assert p.param("data", "complex", "real").value() in [20, 30]

@@ -13,7 +13,7 @@ from typing import Union
 
 
 def params_and_values(
-    p: pyqtgraph.parametertree.Parameter, pth=None, dct=None, separator:str=";"
+    p: pyqtgraph.parametertree.Parameter, pth=None, dct=None, separator: str = ";"
 ):
     """
     Get dict of all parameters. Key is the path to the parameter, value is value of the parameter.
@@ -162,16 +162,16 @@ def get_parameter_by_path(
     :return:
     """
     logger.debug(f"Get {param_path}")
-    param_path_list:List
+    param_path_list: List
     if parse_path:
         param_path_list = param_path.split(separator)
     else:
-        param_path_list =[param_path]
+        param_path_list = [param_path]
     fnparam = parameters.param(*param_path_list)
     return fnparam
 
 
-def to_pyqtgraph_struct(name, value, opts:dict=None):
+def to_pyqtgraph_struct(name, value, opts: dict = None):
     """
     Prepare structure for creating pyqtgraph tree.
     :param name:
@@ -234,7 +234,7 @@ def to_pyqtgraph_struct(name, value, opts:dict=None):
 
         children_list = []
         for keyi, vali in children_key_value.items():
-            children_properties_i:dict = {}
+            children_properties_i: dict = {}
             if keyi in children_properties:
                 children_properties_i.update(children_properties[keyi])
             children_item = to_pyqtgraph_struct(keyi, vali, children_properties_i)
