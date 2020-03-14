@@ -9,3 +9,4 @@ xlrd
 gitpython
 pyqtgraph
 mypy
+mypy_extensions
