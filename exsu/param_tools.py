@@ -12,7 +12,7 @@ import numpy as np
 
 
 def params_and_values(
-    p: pyqtgraph.parametertree.Parameter, pth=None, dct={}, separator=";"
+    p: pyqtgraph.parametertree.Parameter, pth=None, dct=None, separator:str=";"
 ):
     """
     Get dict of all parameters. Key is the path to the parameter, value is value of the parameter.
@@ -22,6 +22,8 @@ def params_and_values(
     :param separator:  default ";"
     :return:
     """
+    if dct is None:
+        dct = {}
     for name in p.getValues():
         # print(f"name: {name}, type {type(name)}")
         if pth is not None:
@@ -41,7 +43,7 @@ def params_and_values(
 
 
 def find_parameter_path_by_fragment(
-    p: pyqtgraph.parametertree.Parameter, fragment, pth=None, dct={}, separator=";"
+    p: pyqtgraph.parametertree.Parameter, fragment, pth=None, dct=None, separator=";"
 ):
     """
     Get list of paths of all parameters where path contain a fragment.
@@ -52,6 +54,9 @@ def find_parameter_path_by_fragment(
     :param separator:  default ";"
     :return: list of paths
     """
+    if dct is None:
+        dct = {}
+
     pav = params_and_values(p, pth=pth, dct=dct, separator=separator)
 
     params = set()
@@ -148,6 +153,7 @@ def get_parameter_by_path(
     """
     Get parameter based path to parameter.
 
+    :param separator:
     :param param_path: Path to parameter can be separated by ";"
     :param value:
     :param parse_path: Turn on separation of path by ";"
@@ -160,7 +166,7 @@ def get_parameter_by_path(
     return fnparam
 
 
-def to_pyqtgraph_struct(name, value, opts={}):
+def to_pyqtgraph_struct(name, value, opts:dict=None):
     """
     Prepare structure for creating pyqtgraph tree.
     :param name:
@@ -168,7 +174,8 @@ def to_pyqtgraph_struct(name, value, opts={}):
     :param opts:
     :return: pyqtgraph_struct useful which can be converted to params by Parameter(pg_struct)
     """
-
+    if opts is None:
+        opts = {}
     if "type" in opts:
         tp = opts["type"]
     else:

@@ -121,7 +121,7 @@ class ParameterTest(unittest.TestCase):
             name="main", type="group", children=[pg_struct]
         )
         assert type(p) == pyqtgraph.parametertree.parameterTypes.GroupParameter
-        logger.debug(pg_struct)
+        logger.debug(f"pg_struct={pg_struct}")
         self.assertDictEqual(
             pg_struct["children"][0],
             {
@@ -144,7 +144,7 @@ class ParameterTest(unittest.TestCase):
         }
         captions = {"int": "toto je int"}
         pg_struct = ptools.to_pyqtgraph_struct("pokus", cfg)
-        logger.debug(pg_struct)
+        logger.debug(f"pg_struct={pg_struct}")
         self.assertDictEqual(
             pg_struct["children"][0],
             {
@@ -272,7 +272,7 @@ class ParameterTest(unittest.TestCase):
         params4 = ptools.find_parameter_path_by_fragment(p, "data;complex")
         assert len(params4) == 1
 
-    def test_set_and_get_param_by_path(self):
+def test_set_and_get_param_by_path():
 
         cfg = {
             "bool": True,
@@ -290,6 +290,10 @@ class ParameterTest(unittest.TestCase):
             children=pg_struct["children"],
         )
         pths = ptools.find_parameter_path_by_fragment(p, "real")
+        logger.debug(f"p.name={p.name()}")
+        logger.debug(f"pths={pths}")
+        logger.debug(f"pyqtgraph version={pyqtgraph.__version__}")
+        logger.debug(f"pg_struct={pg_struct}")
         ptools.set_parameter_by_path(p, pths[0], 10)
 
         assert ptools.get_parameter_by_path(p, pths[0]).value() == 10
