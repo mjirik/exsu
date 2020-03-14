@@ -3,12 +3,13 @@
 
 from loguru import logger
 import pyqtgraph
-from typing import List
+from typing import List, cast
 import ast
 from pyqtgraph.parametertree import ParameterTree
 import pyqtgraph.parametertree.parameterTypes as pTypes
 import collections
 import numpy as np
+from typing import Union
 
 
 def params_and_values(
@@ -145,6 +146,7 @@ def set_parameter_by_path(
 
 def get_parameter_by_path(
     parameters: pyqtgraph.parametertree.Parameter,
+    # param_path: Union[str, List],
     param_path: str,
     parse_path=True,
     separator=";",
@@ -160,9 +162,12 @@ def get_parameter_by_path(
     :return:
     """
     logger.debug(f"Get {param_path}")
+    param_path_list:List
     if parse_path:
-        param_path = param_path.split(separator)
-    fnparam = parameters.param(*param_path)
+        param_path_list = param_path.split(separator)
+    else:
+        param_path_list =[param_path]
+    fnparam = parameters.param(*param_path_list)
     return fnparam
 
 
@@ -229,7 +234,7 @@ def to_pyqtgraph_struct(name, value, opts:dict=None):
 
         children_list = []
         for keyi, vali in children_key_value.items():
-            children_properties_i = {}
+            children_properties_i:dict = {}
             if keyi in children_properties:
                 children_properties_i.update(children_properties[keyi])
             children_item = to_pyqtgraph_struct(keyi, vali, children_properties_i)

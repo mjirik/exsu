@@ -78,6 +78,6 @@ install:
 # script: nosetests -v --with-coverage --cover-package=exsu
 
 script:
-  - python -m pytest --cov=exsu/ -v
+  - python -m pytest --cov=exsu/ -v --mypy --mypi-ignore-missing-imports
 after_success:
     - coveralls
