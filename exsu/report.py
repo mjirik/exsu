@@ -27,7 +27,7 @@ class Report:
         debug=False,
         repodir=None,
         reponame=None,
-        check_version_of:List[str]=None
+        check_version_of: List[str] = None,
     ):
         """
         :param repodir: Directory with repository. The repository is checked when it is added.
@@ -53,7 +53,7 @@ class Report:
         self.level = level
         self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
-        self.persistent_cols:dict = {}
+        self.persistent_cols: dict = {}
         # self.repos = []
         self.outputdir = None
         self.check_version_of = check_version_of
@@ -62,7 +62,7 @@ class Report:
             self.init_with_output_dir(outputdir)
         else:
             self.init()
-        self.repos:Dict[str, str] = {}
+        self.repos: Dict[str, str] = {}
 
         if repodir is not None:
             self.add_repo(repodir, reponame)

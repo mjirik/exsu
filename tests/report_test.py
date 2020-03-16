@@ -14,7 +14,7 @@ import exsu.report
 import numpy as np
 import pytest
 
-pytest_plugins = 'pytester'
+pytest_plugins = "pytester"
 
 
 class ReportTest(unittest.TestCase):
@@ -143,9 +143,9 @@ def test_report_no_outputdir(tmp_path):
         check_version_of=["numpy"]
         # show=False
     )
-    report.add_cols_to_actual_row({"col1":15, "col2": "class1"})
+    report.add_cols_to_actual_row({"col1": 15, "col2": "class1"})
     report.finish_actual_row()
-    report.add_cols_to_actual_row({"col1":12, "col2": "class2"})
+    report.add_cols_to_actual_row({"col1": 12, "col2": "class2"})
     report.finish_actual_row()
     report.dump()
     assert commonsheet.exists()
@@ -185,16 +185,16 @@ def test_report_no_outputdir_and_save_fig(tmp_path):
         level="debug"  # warning = 10
         # show=False
     )
-    report.add_cols_to_actual_row({"col1":15, "col2": "class1"})
+    report.add_cols_to_actual_row({"col1": 15, "col2": "class1"})
     report.finish_actual_row()
-    report.add_cols_to_actual_row({"col1":12, "col2": "class2"})
+    report.add_cols_to_actual_row({"col1": 12, "col2": "class2"})
     report.finish_actual_row()
     report.set_save(True)
     report.dump()
     assert commonsheet.exists()
     with pytest.raises(ValueError) as excinfo:
         report.imsave(fn_noext, img)
-    assert 'Outputdir have to be set' in str(excinfo.value)
+    assert "Outputdir have to be set" in str(excinfo.value)
 
     # assert.ex
 
