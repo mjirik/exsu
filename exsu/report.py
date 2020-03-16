@@ -10,7 +10,7 @@ import os.path as op
 import os
 import warnings
 from pathlib import Path
-from typing import Union, List
+from typing import Union, List, Dict
 import numpy as np
 from . import git_tools
 from . import packages
@@ -45,15 +45,15 @@ class Report:
         # self.outputdir = op.expanduser(outputdir)
 
         self.df: pd.DataFrame = None
-        self.imgs = {}
-        self.actual_row = {}
+        self.imgs: Dict[str, str] = {}
+        self.actual_row: dict = {}
         self.show = show
         self.save = save
         self.debug = debug
         self.level = level
         self.spreadsheet_fn = "data.xlsx"
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
-        self.persistent_cols: dict = {}
+        self.persistent_cols:dict = {}
         # self.repos = []
         self.outputdir = None
         self.check_version_of = check_version_of
@@ -62,7 +62,7 @@ class Report:
             self.init_with_output_dir(outputdir)
         else:
             self.init()
-        self.repos = {}
+        self.repos:Dict[str, str] = {}
 
         if repodir is not None:
             self.add_repo(repodir, reponame)
