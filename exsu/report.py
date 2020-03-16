@@ -68,9 +68,9 @@ class Report:
         if repodir is not None:
             self.add_repo(repodir, reponame)
 
-    def add_repo(self, repodir: Union[Path, str], reponame: str = None):
+    def add_repo(self, repodir, reponame: str = None):
         # self.repos.push((repodir, reponame))
-        self.repos[reponame] = repodir
+        self.repos[reponame] = Path(repodir)
         repo_cols = git_tools.repo_status_to_dict(repodir, reponame)
         self.set_persistent_cols(repo_cols)
 
