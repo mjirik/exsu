@@ -10,7 +10,7 @@ import os.path as op
 import os
 import warnings
 from pathlib import Path
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Any
 import numpy as np
 from . import git_tools
 from . import packages
@@ -45,7 +45,8 @@ class Report:
         # self.outputdir = op.expanduser(outputdir)
 
         self.df: pd.DataFrame = None
-        self.imgs: Dict[str, str] = {}
+        # self.imgs: Dict[str, np.ndarray] = {}
+        self.imgs: dict = {}
         self.actual_row: dict = {}
         self.show = show
         self.save = save
@@ -62,7 +63,7 @@ class Report:
             self.init_with_output_dir(outputdir)
         else:
             self.init()
-        self.repos: Dict[str, str] = {}
+        self.repos: dict = {}
 
         if repodir is not None:
             self.add_repo(repodir, reponame)
