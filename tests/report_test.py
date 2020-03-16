@@ -139,7 +139,8 @@ def test_report_no_outputdir(tmp_path):
     report = exsu.report.Report(
         outputdir=None,
         additional_spreadsheet_fn=commonsheet,
-        level="debug"  # warning = 10
+        level="debug",  # warning = 10
+        check_version_of=["numpy"]
         # show=False
     )
     report.add_cols_to_actual_row({"col1":15, "col2": "class1"})
@@ -148,6 +149,8 @@ def test_report_no_outputdir(tmp_path):
     report.finish_actual_row()
     report.dump()
     assert commonsheet.exists()
+    dfo = pd.read_excel(commonsheet)
+    assert "numpy_version" in dfo.keys()
 
 
 def test_report_no_outputdir_and_save_fig(tmp_path):

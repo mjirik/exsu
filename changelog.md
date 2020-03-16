@@ -4,6 +4,7 @@
 
 ## Version 0.4.
 
+ * [Added] Check version of selected packages
  * [Added] Added functions for work with parameters
  * [Added] Added icon cration function
 

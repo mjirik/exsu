@@ -10,9 +10,10 @@ import os.path as op
 import os
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 import numpy as np
 from . import git_tools
+from . import packages
 
 
 class Report:
@@ -26,16 +27,20 @@ class Report:
         debug=False,
         repodir=None,
         reponame=None,
+        check_version_of:List[str]=None
     ):
         """
-
-        :param outputdir:
+        :param repodir: Directory with repository. The repository is checked when it is added.
+        Repository hash will be added to every row.
+        :param reponame: Name of repository. It can be derived automatically from repodir.
+        :param outputdir: Directory for output. Have to be set for image report.
         :param additional_spreadsheet_fn:
         :param level: control initial level
         :param save:
         :param show:
         :param debug:
-        :param repodir: git repository directory to watch. Repository hash will be added to every row.
+        :param check_version_of: list of strings with names of packages. The versions of the packages are saved to
+        output spreadsheet when the line is finished.
         """
         # self.outputdir = op.expanduser(outputdir)
 
@@ -51,17 +56,20 @@ class Report:
         self.persistent_cols: dict = {}
         # self.repos = []
         self.outputdir = None
+        self.check_version_of = check_version_of
 
         if outputdir is not None:
             self.init_with_output_dir(outputdir)
         else:
             self.init()
+        self.repos = {}
 
         if repodir is not None:
             self.add_repo(repodir, reponame)
 
     def add_repo(self, repodir: Union[Path, str], reponame: str = None):
         # self.repos.push((repodir, reponame))
+        self.repos[reponame] = repodir
         repo_cols = git_tools.repo_status_to_dict(repodir, reponame)
         self.set_persistent_cols(repo_cols)
 
@@ -101,6 +109,8 @@ class Report:
         logger.debug(f"Actual row cols: {list(self.actual_row.keys())}")
         logger.debug(f"Persistent cols: {list(self.persistent_cols.keys())}")
         data.update(self.persistent_cols)
+        if self.check_version_of is not None:
+            data.update(packages.get_version_of_packages_as_dict(self.check_version_of))
 
         df = pd.DataFrame([list(data.values())], columns=list(data.keys()))
         logger.debug(

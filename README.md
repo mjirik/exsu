@@ -9,6 +9,12 @@
 Experiment support tools prepared for computer vision experiments. 
 Output directory and spreadsheet file is managed by package.
 
+* Spreadsheet data and report images are stored into output directory
+* Images are reported according a selected severity
+* Common spreadseet containing complete history from all output directories can be produced
+* Version of particular python package can be reported in the spreadsheet
+* Repository status, git hash and dirty files can be reported in the spreadsheet
+
 ## Write spreadsheet data
 
 ```python
@@ -75,3 +81,16 @@ Output DataFrame
 ```
 
 More than one repositories can be added with `report.add_repo(repodir, reponame=None)`.
+
+
+## Automatically report versions of selected packages
+
+The version of crucial packages can be reported with the data.
+
+```python
+import exsu
+report = exsu.report.Report(check_version_of=["numpy", "scipy"])
+report.finish_actual_row()
+report.df
+
+```
