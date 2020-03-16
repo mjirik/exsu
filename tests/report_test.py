@@ -12,6 +12,9 @@ import pandas as pd
 # import openslide
 import exsu.report
 import numpy as np
+import pytest
+
+pytest_plugins = 'pytester'
 
 
 class ReportTest(unittest.TestCase):
@@ -125,50 +128,120 @@ class ReportTest(unittest.TestCase):
         assert (outputdir / fn_npz).exists()
         assert (outputdir / fn_skimage).exists()
 
-    def test_savefig(self):
-        outputdir = Path("./test_report/")
-        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
-        if commonsheet.exists():
-            os.remove(commonsheet)
-        fn_noext = "test_figure"
-        fn = "test_figure.png"
 
-        fn_as_figure = "test_figure.png"
-        fn_as_figure_npz = "test_figure.npz"
-        # fn_npz = Path("test_figure.npz")
-        # fn_skimage = Path("test_figure.png")
-        if Path(fn).exists():
-            os.remove(fn)
-        if Path(fn_as_figure).exists():
-            os.remove(fn_as_figure)
-        if Path(fn_as_figure_npz).exists():
-            os.remove(fn_as_figure_npz)
-        img = 50 + np.random.rand(100, 100, 3) * 30
-        img[20:60, 20:60, 0] += 100
-        img[40:80, 20:60, 1] += 100
-        img[40:60, 40:80, 2] += 100
-        img = img.astype(np.uint8)
-        from matplotlib import pyplot as plt
+def test_report_no_outputdir(tmp_path):
+    outputdir = Path(tmp_path)
+    commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+    logger.debug(f"outputdir={outputdir}")
+    if commonsheet.exists():
+        os.remove(commonsheet)
 
-        report = exsu.report.Report(
-            outputdir=outputdir,
-            additional_spreadsheet_fn=commonsheet,
-            level="debug"  # warning = 10
-            # show=False
-        )
-        report.set_save(True)
-        report.set_show(False)
-        fig = plt.figure()
-        report.savefig_and_show(fn_noext, fig=fig)
-        plt.close(fig)  # probably not necessary
+    report = exsu.report.Report(
+        outputdir=None,
+        additional_spreadsheet_fn=commonsheet,
+        level="debug"  # warning = 10
+        # show=False
+    )
+    report.add_cols_to_actual_row({"col1":15, "col2": "class1"})
+    report.finish_actual_row()
+    report.add_cols_to_actual_row({"col1":12, "col2": "class2"})
+    report.finish_actual_row()
+    report.dump()
+    assert commonsheet.exists()
 
-        # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
 
-        assert (outputdir / fn).exists()
+def test_report_no_outputdir_and_save_fig(tmp_path):
+    outputdir = Path(tmp_path)
+    commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+    logger.debug(f"outputdir={outputdir}")
+    if commonsheet.exists():
+        os.remove(commonsheet)
 
-        # test another function saving as figure
-        report.imsave_as_fig(fn_as_figure, img)
-        assert (outputdir / fn_as_figure).exists()
-        assert (outputdir / fn_as_figure_npz).exists()
-        # assert (outputdir / fn_npz).exists()
-        # assert (outputdir / fn_skimage).exists()
+    fn_noext = "test_figure"
+    fn = "test_figure.png"
+
+    fn_as_figure = "test_figure.png"
+    fn_as_figure_npz = "test_figure.npz"
+
+    if Path(fn).exists():
+        os.remove(fn)
+    if Path(fn_as_figure).exists():
+        os.remove(fn_as_figure)
+    if Path(fn_as_figure_npz).exists():
+        os.remove(fn_as_figure_npz)
+
+    img = 50 + np.random.rand(100, 100, 3) * 30
+    img[20:60, 20:60, 0] += 100
+    img[40:80, 20:60, 1] += 100
+    img[40:60, 40:80, 2] += 100
+    img = img.astype(np.uint8)
+
+    report = exsu.report.Report(
+        outputdir=None,
+        additional_spreadsheet_fn=commonsheet,
+        level="debug"  # warning = 10
+        # show=False
+    )
+    report.add_cols_to_actual_row({"col1":15, "col2": "class1"})
+    report.finish_actual_row()
+    report.add_cols_to_actual_row({"col1":12, "col2": "class2"})
+    report.finish_actual_row()
+    report.set_save(True)
+    report.dump()
+    assert commonsheet.exists()
+    with pytest.raises(ValueError) as excinfo:
+        report.imsave(fn_noext, img)
+    assert 'Outputdir have to be set' in str(excinfo.value)
+
+    # assert.ex
+
+
+def test_savefig(tmp_path):
+    # outputdir = Path("./test_report/")
+    outputdir = Path(tmp_path)
+    commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+    logger.debug(f"outputdir={outputdir}")
+    if commonsheet.exists():
+        os.remove(commonsheet)
+    fn_noext = "test_figure"
+    fn = "test_figure.png"
+
+    fn_as_figure = "test_figure.png"
+    fn_as_figure_npz = "test_figure.npz"
+    # fn_npz = Path("test_figure.npz")
+    # fn_skimage = Path("test_figure.png")
+    if Path(fn).exists():
+        os.remove(fn)
+    if Path(fn_as_figure).exists():
+        os.remove(fn_as_figure)
+    if Path(fn_as_figure_npz).exists():
+        os.remove(fn_as_figure_npz)
+    img = 50 + np.random.rand(100, 100, 3) * 30
+    img[20:60, 20:60, 0] += 100
+    img[40:80, 20:60, 1] += 100
+    img[40:60, 40:80, 2] += 100
+    img = img.astype(np.uint8)
+    from matplotlib import pyplot as plt
+
+    report = exsu.report.Report(
+        outputdir=outputdir,
+        additional_spreadsheet_fn=commonsheet,
+        level="debug"  # warning = 10
+        # show=False
+    )
+    report.set_save(True)
+    report.set_show(False)
+    fig = plt.figure()
+    report.savefig_and_show(fn_noext, fig=fig)
+    plt.close(fig)  # probably not necessary
+
+    # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
+
+    assert (outputdir / fn).exists()
+
+    # test another function saving as figure
+    report.imsave_as_fig(fn_as_figure, img)
+    assert (outputdir / fn_as_figure).exists()
+    assert (outputdir / fn_as_figure_npz).exists()
+    # assert (outputdir / fn_npz).exists()
+    # assert (outputdir / fn_skimage).exists()

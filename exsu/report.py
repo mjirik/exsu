@@ -50,6 +50,7 @@ class Report:
         self.additional_spreadsheet_fn = additional_spreadsheet_fn
         self.persistent_cols: dict = {}
         # self.repos = []
+        self.outputdir = None
 
         if outputdir is not None:
             self.init_with_output_dir(outputdir)
@@ -127,13 +128,14 @@ class Report:
         self.actual_row = {}
 
     def dump(self):
-        pth = op.join(self.outputdir, self.spreadsheet_fn)
-        logger.debug(f"Saving to file {pth}")
-        ppth = Path(pth)
-        if not ppth.parent.exists():
-            logger.debug("creating output dir")
-            os.makedirs(ppth.parent)
-        self.df.to_excel(pth)
+        if self.outputdir is not None:
+            pth = self._imjoin(self.outputdir, self.spreadsheet_fn)
+            logger.debug(f"Saving to file {pth}")
+            ppth = Path(pth)
+            if not ppth.parent.exists():
+                logger.debug("creating output dir")
+                os.makedirs(ppth.parent)
+            self.df.to_excel(pth)
 
         if self.additional_spreadsheet_fn is not None:
             excel_path = Path(self.additional_spreadsheet_fn)
@@ -174,7 +176,7 @@ class Report:
             if self._is_under_level(level):
                 import matplotlib.pyplot as plt
 
-                fn = op.join(self.outputdir, filename + ext)
+                fn = self._imjoin(self.outputdir, filename + ext)
                 logger.debug(f"write to file: {fn}")
                 plt.imsave(fn, arr)
 
@@ -182,11 +184,16 @@ class Report:
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", ".*low contrast image.*")
                     # warnings.simplefilter("low contrast image")
-                    fn = op.join(self.outputdir, filename + "_skimage" + ext)
+                    fn = self._imjoin(self.outputdir, filename + "_skimage" + ext)
                     logger.debug(f"write to file: {fn}")
                     skimage.io.imsave(fn, k * arr)
             if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
+
+    def _imjoin(self, *args, **kwargs):
+        if self.outputdir is None:
+            raise ValueError("Outputdir have to be set before image is saved.")
+        return op.join(*args, **kwargs)
 
     def _save_arr(self, base_fn, arr: np.ndarray):
         """
@@ -196,7 +203,7 @@ class Report:
         :return:
         """
         filename, ext = op.splitext(base_fn)
-        fn = op.join(self.outputdir, filename + ".npz")
+        fn = self._imjoin(self.outputdir, filename + ".npz")
         np.savez_compressed(fn, arr=arr)
         self.imgs[base_fn] = fn
 
@@ -227,7 +234,7 @@ class Report:
             plt.imshow(arr)
             plt.colorbar()
             if self.save:
-                fn = op.join(self.outputdir, filename + "" + ext)
+                fn = self._imjoin(self.outputdir, filename + "" + ext)
                 plt.savefig(fn)
             if self.show:
                 plt.show()
@@ -256,7 +263,7 @@ class Report:
             if ext == "":
                 ext = ".png"
             if self.save:
-                fn = op.join(self.outputdir, filename + "" + ext)
+                fn = self._imjoin(self.outputdir, filename + "" + ext)
                 plt.savefig(fn)
                 # self.imgs[base_fn] = [fn]
 
@@ -282,7 +289,7 @@ class Report:
     #     if self._is_under_level(level):
     #         if format_args is None:
     #             format_args = []
-    #         fn = op.join(self.outputdir, base_fn.format(format_args))
+    #         fn = self._imjoin(self.outputdir, base_fn.format(format_args))
     #         np.save(data, fn)
     #         self.imgs[base_fn] = fn
 
