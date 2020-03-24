@@ -95,6 +95,7 @@ def set_parameters_by_path(
     path_val_couple_list: List,
     parse_path=True,
     separator=";",
+    literal_eval=False
 ):
     """
     Set value to parameter.
@@ -107,17 +108,14 @@ def set_parameters_by_path(
     """
 
     for param_path, param_value in path_val_couple_list:
-        if type(param_value) is str:
-            value = ast.literal_eval(param_value)
-        else:
-            value = param_value
-        logger.debug(f"param path={param_path}, ast value={value}")
+        value = param_value
         set_parameter_by_path(
             parameters,
             param_path,
             value=value,
             parse_path=parse_path,
             separator=separator,
+            literal_eval=literal_eval
         )
 
 
@@ -127,6 +125,7 @@ def set_parameter_by_path(
     value,
     parse_path=True,
     separator=";",
+    literal_eval:bool=False
 ):
     """
     Set value to parameter.
@@ -135,6 +134,9 @@ def set_parameter_by_path(
     :param parse_path: Turn on separation of path by ";"
     :return:
     """
+    if literal_eval and type(value) is str:
+        value = ast.literal_eval(value)
+    logger.debug(f"param path={param_path}, ast value={value}")
     p = get_parameter_by_path(
         parameters=parameters,
         param_path=param_path,
@@ -146,7 +148,7 @@ def set_parameter_by_path(
 
 def get_parameter_by_path(
     parameters: pyqtgraph.parametertree.Parameter,
-    # param_path: Union[str, List],
+    # param_path: Union[str, List[str]],
     param_path: str,
     parse_path=True,
     separator=";",
@@ -162,6 +164,8 @@ def get_parameter_by_path(
     :return:
     """
     logger.debug(f"Get {param_path}")
+
+
     param_path_list: List
     if parse_path:
         param_path_list = param_path.split(separator)
