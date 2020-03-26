@@ -39,7 +39,6 @@ build:
 requirements:
   build:
     - python
-    - setuptools
     - pandas
     - loguru
     - lxml
