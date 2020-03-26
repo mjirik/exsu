@@ -38,8 +38,8 @@ build:
 
 requirements:
   build:
-    - python
     - pandas
+    - python
     - loguru
     - lxml
     - openpyxl
@@ -50,8 +50,8 @@ requirements:
     # - { pin_compatible('imma', max_pin='x.x') }
 
   run:
-    - python
     - pandas
+    - python
     - loguru
     - lxml
     - openpyxl
