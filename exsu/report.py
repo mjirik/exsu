@@ -157,7 +157,7 @@ class Report:
         # append_df_to_excel_no_head_processing(filename, self.df)
 
     def imsave(
-        self, base_fn, arr: np.ndarray, level=90, level_skimage=40, level_npz=20, k=50
+        self, base_fn, arr: np.ndarray, level=90, level_skimage=40, level_npz=20, k=50, kwargs_skimage=None, **kwargs
     ):
         """
         Save image to report dir.
@@ -174,11 +174,16 @@ class Report:
         :param base_fn: with a format slot for annotation id like "skeleton_{}.png"
         :param arr: numpy array with input data
         :param level: severity of input
-        :param level_skimage: severity of input
+        :param level_skimage: severity of input. It is not colloring the image.
         :param k: multiplier applied on input image intensities on skimage save
+        :param kwargs_skimage: used for internal call of skimage.io.imsave
+        :param kwargs are used for internal call plt.imsave
         :return:
         """
+
         import skimage.io
+        if kwargs_skimage is None:
+            kwargs_skimage = {}
 
         filename, ext = op.splitext(base_fn)
         if ext == "":
@@ -189,7 +194,7 @@ class Report:
 
                 fn = self._imjoin(self.outputdir, filename + ext)
                 logger.debug(f"write to file: {fn}")
-                plt.imsave(fn, arr)
+                plt.imsave(fn, arr, **kwargs)
 
             if self._is_under_level(level_skimage):
                 with warnings.catch_warnings():
@@ -197,7 +202,7 @@ class Report:
                     # warnings.simplefilter("low contrast image")
                     fn = self._imjoin(self.outputdir, filename + "_skimage" + ext)
                     logger.debug(f"write to file: {fn}")
-                    skimage.io.imsave(fn, k * arr)
+                    skimage.io.imsave(fn, k * arr, kwargs_skimage)
             if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
 

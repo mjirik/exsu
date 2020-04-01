@@ -1,6 +1,7 @@
 # Changelog
 
 
+ * [Added] `kwargs` can be used in `imsave()`
 
 ## Version 0.4.
 
