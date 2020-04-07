@@ -202,7 +202,7 @@ class Report:
                     # warnings.simplefilter("low contrast image")
                     fn = self._imjoin(self.outputdir, filename + "_skimage" + ext)
                     logger.debug(f"write to file: {fn}")
-                    skimage.io.imsave(fn, k * arr, kwargs_skimage)
+                    skimage.io.imsave(fn, k * arr, *kwargs_skimage)
             if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
 
