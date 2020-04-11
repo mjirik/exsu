@@ -99,7 +99,7 @@ class Report:
 
     def set_output_dir(self, outputdir):
         """
-        Set the output dir with expand user.
+        Set the output dir with expanrequired. .
         :param outputdir:
         :return:
         """
@@ -152,7 +152,7 @@ class Report:
 
     def dump(self):
         if self.outputdir is not None:
-            pth = self.join_output_dir(self.outputdir, self.spreadsheet_fn)
+            pth = self.join_output_dir(self.spreadsheet_fn)
             logger.debug(f"Saving to file {pth}")
             ppth = Path(pth)
             if not ppth.parent.exists():
@@ -204,7 +204,7 @@ class Report:
             if self._is_under_level(level):
                 import matplotlib.pyplot as plt
 
-                fn = self.join_output_dir(self.outputdir, filename + ext)
+                fn = self.join_output_dir(filename + ext)
                 logger.debug(f"write to file: {fn}")
                 plt.imsave(fn, arr, **kwargs)
 
@@ -212,18 +212,24 @@ class Report:
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", ".*low contrast image.*")
                     # warnings.simplefilter("low contrast image")
-                    fn = self.join_output_dir(self.outputdir, filename + "_skimage" + ext)
+                    fn = self.join_output_dir(filename + "_skimage" + ext)
                     logger.debug(f"write to file: {fn}")
                     skimage.io.imsave(fn, k * arr, *kwargs_skimage)
             if self._is_under_level(level_npz):
                 self._save_arr(base_fn, arr)
 
     def join_output_dir(self, *args, **kwargs):
+        """
+        Join path to output dir and create output dir if necessary
+        :param args:
+        :param kwargs:
+        :return:
+        """
         if self.outputdir is None:
             raise ValueError("Outputdir have to be set before file is saved.")
         if not op.exists(self.outputdir):
             os.makedirs(self.outputdir)
-        return op.join(*args, **kwargs)
+        return op.join(self.outputdir, *args, **kwargs)
 
     def _save_arr(self, base_fn, arr: np.ndarray):
         """
@@ -233,7 +239,7 @@ class Report:
         :return:
         """
         filename, ext = op.splitext(base_fn)
-        fn = self.join_output_dir(self.outputdir, filename + ".npz")
+        fn = self.join_output_dir(filename + ".npz")
         np.savez_compressed(fn, arr=arr)
         self.imgs[base_fn] = fn
 
@@ -264,7 +270,7 @@ class Report:
             plt.imshow(arr)
             plt.colorbar()
             if self.save:
-                fn = self.join_output_dir(self.outputdir, filename + "" + ext)
+                fn = self.join_output_dir(filename + "" + ext)
                 plt.savefig(fn)
             if self.show:
                 plt.show()
@@ -293,7 +299,7 @@ class Report:
             if ext == "":
                 ext = ".png"
             if self.save:
-                fn = self.join_output_dir(self.outputdir, filename + "" + ext)
+                fn = self.join_output_dir(filename + "" + ext)
                 plt.savefig(fn)
                 # self.imgs[base_fn] = [fn]
 
