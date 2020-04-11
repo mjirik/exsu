@@ -357,7 +357,7 @@ def append_df_to_excel(
       to_excel_kwargs : arguments which will be passed to `DataFrame.to_excel()`
                         [can be dictionary]
 
-    Returns: None
+    Returns: pandas dataframe with combined information
     """
     logger.debug(f"Writing XLSX to: {str(filename)}")
     # from openpyxl import load_workbook
@@ -372,6 +372,7 @@ def append_df_to_excel(
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
         dfcombine = dfold.append(df, ignore_index=True, sort=True)
         dfcombine.to_excel(str(filename), sheet_name=sheet_name, index=False)
+        return dfcombine
         # try:
         #     dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
         #     dfcombine = dfold.append(df, ignore_index=True)
@@ -386,7 +387,7 @@ def append_df_to_excel(
         filename.parent.mkdir(parents=True, exist_ok=True)
         # pd.read_excel(filename, sheet_name=)
         df.to_excel(str(filename), sheet_name=sheet_name, index=False)
-        pass
+        return df
 
     # # ignore [engine] parameter if it was passed
     # if 'engine' in to_excel_kwargs:
