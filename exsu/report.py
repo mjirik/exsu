@@ -89,11 +89,23 @@ class Report:
         logger.debug(f"Adding persistent cols: {list(self.persistent_cols.keys())}")
 
     def init_with_output_dir(self, outputdir):
+        """
+        Make set_output_dir() and init report.
+        :param outputdir:
+        :return:
+        """
+        self.set_output_dir(outputdir)
+        self.init()
+
+    def set_output_dir(self, outputdir):
+        """
+        Set the output dir and create the directory if it does not exist yet.
+        :param outputdir:
+        :return:
+        """
         self.outputdir = Path(outputdir).expanduser()
         if not op.exists(self.outputdir):
             os.makedirs(self.outputdir)
-
-        self.init()
 
     def set_show(self, show):
         self.show = show
