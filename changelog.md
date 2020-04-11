@@ -8,6 +8,7 @@
  * [Added] Check version of selected packages
  * [Added] Added functions for work with parameters
  * [Added] Added icon cration function
+ * [Changed] Outputdir is created in the moment it is required. 
 
 ## Version 0.3.
 
