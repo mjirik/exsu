@@ -119,14 +119,14 @@ class Report:
     # def write_table(self, filename):
     def finish_actual_row(self):
         data = self.actual_row
-        logger.debug(f"Actual row cols: {list(self.actual_row.keys())}")
-        logger.debug(f"Persistent cols: {list(self.persistent_cols.keys())}")
+        logger.trace(f"Actual row cols: {list(self.actual_row.keys())}")
+        logger.trace(f"Persistent cols: {list(self.persistent_cols.keys())}")
         data.update(self.persistent_cols)
         if self.check_version_of is not None:
             data.update(packages.get_version_of_packages_as_dict(self.check_version_of))
 
         df = pd.DataFrame([list(data.values())], columns=list(data.keys()))
-        logger.debug(
+        logger.trace(
             f"Unique values types {np.unique(map(str, map(type, data.values())))}"
         )
         self.df = self.df.append(df, ignore_index=True)
