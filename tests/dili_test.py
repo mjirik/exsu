@@ -40,6 +40,13 @@ class DictListTestCase(unittest.TestCase):
         dct = dict(dct)
         self.assertIn("cccaaa", dct.keys())
 
+    def test_ditc_flatten_keys_with_simplify(self):
+        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": [1,2,0]}}}
+        dct = dili.flatten_dict_join_keys(data, simplify_iterables=True)
+        dct = dict(dct)
+        assert "c cc aaa 0" in dct.keys()
+        assert dct["c cc aaa 0"] == 1
+
     def test_dict_flatten_with_separator(self):
         data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": 111}}}
         dct = dili.flatten_dict(data, separator=";")
@@ -50,6 +57,24 @@ class DictListTestCase(unittest.TestCase):
         data = self.generate_dict_data()
         data_updated = dili.recursive_update(data, {"c": {"aa": 33}})
         self.assertEqual(data_updated["c"]["aa"], 33)
+
+    def test_list_to_dict(self):
+        data = self.generate_dict_data()
+        data["c"]["here is list"] = [1, 2, 5]
+
+        data_with_dict = dili.list_to_dict_in_structure(data)
+        dct = data_with_dict["c"]["here is list"]
+        self.assertEqual(type(dct), dict)
+        assert data_with_dict["c"]["here is list"][2] == 5
+
+    def test_list_to_dict_key_str(self):
+        data = self.generate_dict_data()
+        data["c"]["here is list"] = [1, 2, 5]
+
+        data_with_dict = dili.list_to_dict_in_structure(data, keys_to_str=True)
+        dct = data_with_dict["c"]["here is list"]
+        self.assertEqual(type(dct), dict)
+        assert data_with_dict["c"]["here is list"]['2'] == 5
 
     def test_ndarray_to_list(self):
         data = self.generate_dict_data()

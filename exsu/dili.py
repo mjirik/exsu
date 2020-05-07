@@ -143,13 +143,17 @@ from operator import add
 _FLAG_FIRST = object()
 
 
-def flatten_dict_join_keys(dct, join_symbol=" "):
+def flatten_dict_join_keys(dct, join_symbol=" ", simplify_iterables=False):
     """ Flatten dict with defined key join symbol.
 
     :param dct: dict to flatten
     :param join_symbol: default value is " "
+    :param simplify_iterables: each element of lists and ndarrays is represented as one key
     :return:
     """
+    if simplify_iterables:
+        dct = ndarray_to_list_in_structure(dct)
+        dct = list_to_dict_in_structure(dct, keys_to_str=True)
     return dict(flatten_dict(dct, join=lambda a, b: a + join_symbol + b))
 
 
@@ -241,7 +245,7 @@ def df_drop_duplicates(df, ignore_key_pattern="time"):
 
 
 def ndarray_to_list_in_structure(item, squeeze=True):
-    """ Change ndarray in structure of lists and dicts into lists.
+    """ Change ndarray in structure of lists and dicts into lists. Recursive.
     """
     tp = type(item)
 
@@ -255,6 +259,25 @@ def ndarray_to_list_in_structure(item, squeeze=True):
     elif tp == dict:
         for lab in item:
             item[lab] = ndarray_to_list_in_structure(item[lab])
+
+    return item
+
+def list_to_dict_in_structure(item, keys_to_str=False):
+    """ Change ndarray in structure of lists and dicts into lists. Recursive.
+    :param item: list or dict
+    """
+    tp = type(item)
+
+    if tp == list:
+        item = {
+            str(key) if keys_to_str else key:
+                list_to_dict_in_structure(value, keys_to_str=keys_to_str) for key, value in enumerate(item)
+        }
+        # for i in range(len(item)):
+        #     item[i] = ndarray_to_list_in_structure(item[i])
+    elif tp == dict:
+        for lab in item:
+            item[lab] = list_to_dict_in_structure(item[lab], keys_to_str=keys_to_str)
 
     return item
 

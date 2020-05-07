@@ -2,6 +2,7 @@
 
 
  * [Added] `kwargs` can be used in `imsave()`
+ * [Added] Flatten keys in struct. The list and ndarray can be converted to simple cols.
 
 ## Version 0.4.
 
