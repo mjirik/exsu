@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from loguru import logger
-import git
-from git import Repo
 from typing import Union
 from pathlib import Path
 
@@ -18,6 +16,11 @@ def repo_status_to_dict(
     :param diff: Add diff string if true and if there are some changes.
     :return:
     """
+    try:
+        import git
+        from git import Repo
+    except ImportError as e:
+        return {}
     repodir = Path(repodir)
     if is_git_repo(str(repodir)):
         repo = Repo(str(repodir))
@@ -45,6 +48,8 @@ def repo_status_to_dict(
 
 
 def is_git_repo(path):
+    import git
+    from git import Repo
     try:
         _ = git.Repo(path).git_dir
         return True
