@@ -434,3 +434,29 @@ def pick_from_struct(structure, pth):
     for pthi in pth:
         struct = struct[pthi]
     return struct
+
+
+def find_id_of_nearest(df1, key, df2=None, key2=None):
+    """
+    Find closest points in dataframe. The axis of the space ar given by keys
+
+    :param df1: pandas.dataframe
+    :param key: one or more keys in list describing the axis
+    :param key2:
+    :param df2:
+    :return:
+    """
+    if key2 is None:
+        key2 = key
+
+    if df2 is None:
+        df2 = df1
+
+    inds = np.zeros(len(df1), dtype=int)
+    for i in range(len(df1)):
+        norm_i = np.linalg.norm(np.asarray(df1[key].values - df2.iloc[i][key2].values, dtype=float), axis=1)
+        if df1 is df2:
+            norm_i[i] = None
+        inds[i] = np.nanargmin(norm_i)
+    return inds
+

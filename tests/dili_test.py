@@ -241,5 +241,28 @@ class DictListTestCase(unittest.TestCase):
         assert struct["data"]["complex"]["real"] == 10
 
 
+def test_find_closest_in_pandas():
+    import pandas as pd
+    df1 = pd.DataFrame({
+            "x": [0.0, 0.0, 1.0, 1.0],
+            "y": [0.0, 1.0, 1.0, 1.5],
+    })
+    df2 = pd.DataFrame({
+        "x": [0.1, 1.1, 0.1, 1.1],
+        "y": [0.1, 1.0, 1.0, 1.5],
+    })
+
+    ids = dili.find_id_of_nearest(df1, key=["x", "y"], df2=df2, key2=["x", "y"])
+    assert all(list(ids) == np.asarray([0, 2, 1, 3]))
+
+    ids = dili.find_id_of_nearest(df1, key=["x", "y"], df2=df2)
+    assert all(list(ids) == np.asarray([0, 2, 1, 3]))
+
+
+    # looking for closest in the same dataset
+    ids = dili.find_id_of_nearest(df1, key=["x", "y"])
+    assert all(list(ids) == np.asarray([1, 0, 3, 2]))
+
+
 def main():
     unittest.main()
