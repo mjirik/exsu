@@ -210,9 +210,11 @@ class Report:
 
             if self._is_under_level(level_skimage):
                 with warnings.catch_warnings():
-                    warnings.filterwarnings("ignore", ".*low contrast image.*")
-                    # warnings.simplefilter("low contrast image")
+                    # warnings.filterwarnings("ignore", ".*low contrast image.*")
+                    ### warnings.simplefilter("low contrast image")
                     fn = self.join_output_dir(filename + "_skimage" + ext)
+                    if "check_contrast" not in kwargs_skimage:
+                        kwargs_skimage["check_contrast"] = False
                     logger.debug(f"write to file: {fn}")
                     skimage.io.imsave(fn, k * arr, *kwargs_skimage)
             if self._is_under_level(level_npz):
