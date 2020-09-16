@@ -174,7 +174,7 @@ class Report:
         """
         Save image to report dir.
 
-        * The usual way is to use matplotlib to produce grayscale colored images with no\
+        * The usual way is to use matplotlib to produce colored images from grayscale with no\
         additional stuff (like axes).
 
         * The alternative is to skimage to produce real grayscale. The\
