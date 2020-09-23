@@ -1,6 +1,6 @@
 # Changelog
 
-Actual version 0.4.5
+Actual version 0.4.6
 
 ## 0.5
 
