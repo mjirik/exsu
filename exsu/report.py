@@ -158,7 +158,7 @@ class Report:
             if not ppth.parent.exists():
                 logger.debug("creating output dir")
                 os.makedirs(ppth.parent)
-            self.df.to_excel(pth)
+            self.df.to_excel(pth, index=False)
 
         if self.additional_spreadsheet_fn is not None:
             excel_path = Path(self.additional_spreadsheet_fn)

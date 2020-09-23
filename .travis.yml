@@ -1,8 +1,8 @@
 language: python
-python: 2.7
+#python: 2.7
 os: linux
 # Ubuntu 14.04 Trusty support
-sudo: required
+#sudo: required
 # dist: trusty
 # install new cmake
 #addons:

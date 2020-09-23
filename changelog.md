@@ -1,6 +1,10 @@
 # Changelog
 
+Actual version 0.4.1
 
+## 0.5
+
+ * [Changed] Additional spreadsheet saved without index to be compatible with common spreadsheet
  * [Added] Find if of closest points in the dataframe
  * [Added] `kwargs` can be used in `imsave()`
  * [Added] Flatten keys in struct. The list and ndarray can be converted to simple cols.
