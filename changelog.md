@@ -1,6 +1,6 @@
 # Changelog
 
-Actual version 0.4.11
+Actual version 0.5.0
 
 ## 0.5
  * [Added] CSV support
