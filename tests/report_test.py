@@ -64,7 +64,6 @@ class ReportTest(unittest.TestCase):
     #     self.imsave_and_report_to(commonsheet1)
     #     self.imsave_and_report_to(commonsheet2)
 
-
     def test_imsave_npz_and_skimage(self):
         outputdir = Path("./test_report/")
         commonsheet = Path("./test_report_common_spreadsheet.xlsx")
@@ -242,7 +241,8 @@ def test_savefig(tmp_path):
     # assert (outputdir / fn_npz).exists()
     # assert (outputdir / fn_skimage).exists()
 
-@pytest.mark.parametrize('suffix', [('.xls'), ('.xlsx'), ('.xls')])
+
+@pytest.mark.parametrize("suffix", [(".xls"), (".xlsx"), (".xls")])
 def test_imsave_and_report_to_various_spreadsheets(suffix):
     commonsheet = Path(f"./test_report_common_spreadsheet{suffix}")
     outputdir = Path("./test_report/")
@@ -261,7 +261,7 @@ def test_imsave_and_report_to_various_spreadsheets(suffix):
     report.imsave(fn, img)
 
     assert (outputdir / fn).exists()
-    report.add_cols_to_actual_row({"A":1})
+    report.add_cols_to_actual_row({"A": 1})
     report.finish_actual_row()
     report.dump()
     assert commonsheet.exists()

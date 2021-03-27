@@ -169,7 +169,15 @@ class Report:
         # append_df_to_excel_no_head_processing(filename, self.df)
 
     def imsave(
-        self, base_fn, arr: np.ndarray, level=90, level_skimage=40, level_npz=20, k=50, kwargs_skimage=None, **kwargs
+        self,
+        base_fn,
+        arr: np.ndarray,
+        level=90,
+        level_skimage=40,
+        level_npz=20,
+        k=50,
+        kwargs_skimage=None,
+        **kwargs,
     ):
         """
         Save image to report dir.
@@ -194,6 +202,7 @@ class Report:
         """
 
         import skimage.io
+
         if kwargs_skimage is None:
             kwargs_skimage = {}
 
@@ -406,12 +415,13 @@ def append_df_to_excel(
         filename.parent.mkdir(parents=True, exist_ok=True)
 
         # pd.read_excel(filename, sheet_name=)
-    if filename.suffix == '.xlsx':
-        df.to_excel(str(filename), sheet_name=sheet_name, index=False,
-                engine='openpyxl' )
-    elif filename.suffix == '.xls':
+    if filename.suffix == ".xlsx":
+        df.to_excel(
+            str(filename), sheet_name=sheet_name, index=False, engine="openpyxl"
+        )
+    elif filename.suffix == ".xls":
         df.to_excel(str(filename), sheet_name=sheet_name, index=False)
-    elif filename.suffix == '.csv':
+    elif filename.suffix == ".csv":
         df.to_csv(str(filename), index=False)
     else:
         raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
@@ -464,18 +474,19 @@ def append_df_to_excel(
     # writer.save()
 
 
-def read_spreadsheet(filename:Union[str, Path], sheet_name='Sheet1'):
+def read_spreadsheet(filename: Union[str, Path], sheet_name="Sheet1"):
     filename = Path(filename)
     if filename.suffix == ".xls":
         # writer = pd.ExcelWriter(filename, engine='openpyxl')
         dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
     elif filename.suffix == ".xlsx":
-        dfold = pd.read_excel(str(filename), sheet_name=sheet_name, engine='openpyxl')
-    elif filename.suffix == '.csv':
+        dfold = pd.read_excel(str(filename), sheet_name=sheet_name, engine="openpyxl")
+    elif filename.suffix == ".csv":
         dfold = pd.read_csv(str(filename))
     else:
         raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
     return dfold
+
 
 # def append_df_to_excel_no_head_processing(filename, df, sheet_name='Sheet1', startrow=None,
 #                                           truncate_sheet=False,

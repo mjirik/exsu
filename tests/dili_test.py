@@ -41,7 +41,7 @@ class DictListTestCase(unittest.TestCase):
         self.assertIn("cccaaa", dct.keys())
 
     def test_ditc_flatten_keys_with_simplify(self):
-        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": [1,2,0]}}}
+        data = {"a": 1, "b": 2, "c": {"aa": 11, "bb": 22, "cc": {"aaa": [1, 2, 0]}}}
         dct = dili.flatten_dict_join_keys(data, simplify_iterables=True)
         dct = dict(dct)
         assert "c cc aaa 0" in dct.keys()
@@ -74,7 +74,7 @@ class DictListTestCase(unittest.TestCase):
         data_with_dict = dili.list_to_dict_in_structure(data, keys_to_str=True)
         dct = data_with_dict["c"]["here is list"]
         self.assertEqual(type(dct), dict)
-        assert data_with_dict["c"]["here is list"]['2'] == 5
+        assert data_with_dict["c"]["here is list"]["2"] == 5
 
     def test_ndarray_to_list(self):
         data = self.generate_dict_data()
@@ -243,21 +243,15 @@ class DictListTestCase(unittest.TestCase):
 
 def test_find_closest_in_pandas():
     import pandas as pd
-    df1 = pd.DataFrame({
-            "x": [0.0, 0.0, 1.0, 1.0],
-            "y": [0.0, 1.0, 1.0, 1.5],
-    })
-    df2 = pd.DataFrame({
-        "x": [0.1, 1.1, 0.1, 1.1],
-        "y": [0.1, 1.0, 1.0, 1.5],
-    })
+
+    df1 = pd.DataFrame({"x": [0.0, 0.0, 1.0, 1.0], "y": [0.0, 1.0, 1.0, 1.5],})
+    df2 = pd.DataFrame({"x": [0.1, 1.1, 0.1, 1.1], "y": [0.1, 1.0, 1.0, 1.5],})
 
     ids = dili.find_id_of_nearest(df1, key=["x", "y"], df2=df2, key2=["x", "y"])
     assert all(list(ids) == np.asarray([0, 2, 1, 3]))
 
     ids = dili.find_id_of_nearest(df1, key=["x", "y"], df2=df2)
     assert all(list(ids) == np.asarray([0, 2, 1, 3]))
-
 
     # looking for closest in the same dataset
     ids = dili.find_id_of_nearest(df1, key=["x", "y"])

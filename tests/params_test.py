@@ -16,7 +16,8 @@ import collections
 import pytest
 import sys
 import numpy as np
-pytest_plugins = 'pytester'
+
+pytest_plugins = "pytester"
 
 
 app = QApplication(sys.argv)
@@ -273,6 +274,7 @@ class ParameterTest(unittest.TestCase):
         params4 = ptools.find_parameter_path_by_fragment(p, "data;complex")
         assert len(params4) == 1
 
+
 @pytest.fixture
 def cfg_dict():
     cfg = {
@@ -304,7 +306,9 @@ def test_set_and_get_param_by_path(cfg_dict):
     assert ptools.get_parameter_by_path(p, pths[0]).value() == 10
 
     ptools.set_parameter_by_path(p, pths[0], "10", literal_eval=True)
-    assert ptools.get_parameter_by_path(p, pths[0]).value() == 10, "value set by string: '10' "
+    assert (
+        ptools.get_parameter_by_path(p, pths[0]).value() == 10
+    ), "value set by string: '10' "
 
     pths_and_vals = list(zip(pths, [20, 30]))
     ptools.set_parameters_by_path(p, pths_and_vals)
@@ -315,6 +319,6 @@ def test_set_and_get_param_by_path(cfg_dict):
     # assert ptools.get_parameter_by_path(p, ["data", "complex", "real"], parse_path=False) in [20, 30], \
     #     "should be possible to get the parameter value by list"
 
-    assert ptools.get_parameter_by_path(p, "data;complex;real", parse_path=True).value() in [20, 30], \
-        "should be possible to get the parameter value by list"
-
+    assert ptools.get_parameter_by_path(
+        p, "data;complex;real", parse_path=True
+    ).value() in [20, 30], "should be possible to get the parameter value by list"

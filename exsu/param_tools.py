@@ -95,7 +95,7 @@ def set_parameters_by_path(
     path_val_couple_list: List,
     parse_path=True,
     separator=";",
-    literal_eval=False
+    literal_eval=False,
 ):
     """
     Set value to parameter.
@@ -115,7 +115,7 @@ def set_parameters_by_path(
             value=value,
             parse_path=parse_path,
             separator=separator,
-            literal_eval=literal_eval
+            literal_eval=literal_eval,
         )
 
 
@@ -125,7 +125,7 @@ def set_parameter_by_path(
     value,
     parse_path=True,
     separator=";",
-    literal_eval:bool=False
+    literal_eval: bool = False,
 ):
     """
     Set value to parameter.
@@ -164,7 +164,6 @@ def get_parameter_by_path(
     :return:
     """
     logger.debug(f"Get {param_path}")
-
 
     param_path_list: List
     if parse_path:

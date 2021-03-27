@@ -262,6 +262,7 @@ def ndarray_to_list_in_structure(item, squeeze=True):
 
     return item
 
+
 def list_to_dict_in_structure(item, keys_to_str=False):
     """ Change ndarray in structure of lists and dicts into lists. Recursive.
     :param item: list or dict
@@ -270,8 +271,10 @@ def list_to_dict_in_structure(item, keys_to_str=False):
 
     if tp == list:
         item = {
-            str(key) if keys_to_str else key:
-                list_to_dict_in_structure(value, keys_to_str=keys_to_str) for key, value in enumerate(item)
+            str(key)
+            if keys_to_str
+            else key: list_to_dict_in_structure(value, keys_to_str=keys_to_str)
+            for key, value in enumerate(item)
         }
         # for i in range(len(item)):
         #     item[i] = ndarray_to_list_in_structure(item[i])
@@ -454,9 +457,10 @@ def find_id_of_nearest(df1, key, df2=None, key2=None):
 
     inds = np.zeros(len(df1), dtype=int)
     for i in range(len(df1)):
-        norm_i = np.linalg.norm(np.asarray(df1[key].values - df2.iloc[i][key2].values, dtype=float), axis=1)
+        norm_i = np.linalg.norm(
+            np.asarray(df1[key].values - df2.iloc[i][key2].values, dtype=float), axis=1
+        )
         if df1 is df2:
             norm_i[i] = None
         inds[i] = np.nanargmin(norm_i)
     return inds
-

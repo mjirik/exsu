@@ -50,6 +50,7 @@ def repo_status_to_dict(
 def is_git_repo(path):
     import git
     from git import Repo
+
     try:
         _ = git.Repo(path).git_dir
         return True
