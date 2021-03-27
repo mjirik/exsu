@@ -6,5 +6,6 @@ lxml
 matplotlib
 scikit-image
 xlrd
+xlwt
 gitpython
 pyqtgraph
