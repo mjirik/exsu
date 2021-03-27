@@ -388,18 +388,10 @@ def append_df_to_excel(
 
     filename = Path(filename)
     if filename.exists():
-        if filename.suffix in (".xls"):
-            # writer = pd.ExcelWriter(filename, engine='openpyxl')
-            dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
-        elif filename.suffix in (".xlsx"):
-            dfold = pd.read_excel(str(filename), sheet_name=sheet_name, engine='openpyxl')
-        elif filename.suffix in ('.csv'):
-            dfold = pd.read_csv(str(filename))
-        else:
-            raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
+        dfold = read_spreadsheet(filename, sheet_name=sheet_name)
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
         df = dfold.append(df, ignore_index=True, sort=True)
-        df.to_excel(str(filename), sheet_name=sheet_name, index=False, engine='openpyxl')
+        # df.to_excel(str(filename), sheet_name=sheet_name, index=False, engine='openpyxl')
         # try:
         #     dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
         #     dfcombine = dfold.append(df, ignore_index=True)
@@ -471,6 +463,19 @@ def append_df_to_excel(
     # # save the workbook
     # writer.save()
 
+
+def read_spreadsheet(filename:Union[str, Path], sheet_name='Sheet1'):
+    filename = Path(filename)
+    if filename.suffix == ".xls":
+        # writer = pd.ExcelWriter(filename, engine='openpyxl')
+        dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
+    elif filename.suffix == ".xlsx":
+        dfold = pd.read_excel(str(filename), sheet_name=sheet_name, engine='openpyxl')
+    elif filename.suffix == '.csv':
+        dfold = pd.read_csv(str(filename))
+    else:
+        raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
+    return dfold
 
 # def append_df_to_excel_no_head_processing(filename, df, sheet_name='Sheet1', startrow=None,
 #                                           truncate_sheet=False,

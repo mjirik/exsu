@@ -56,33 +56,14 @@ class ReportTest(unittest.TestCase):
         df = pd.read_excel(commonsheet)
         self.assertEqual(len(df), 3, "3 lines expected in the excel file")
 
-    def test_imsave_and_report_to_various_spreadsheets(self):
-        outputdir = Path("./test_report/")
-        commonsheet0 = Path("./test_report_common_spreadsheet.xls")
-        commonsheet1 = Path("./test_report_common_spreadsheet.xlsx")
-        commonsheet2 = Path("./test_report_common_spreadsheet.csv")
-        self.imsave_and_report_to(commonsheet0)
-        self.imsave_and_report_to(commonsheet1)
-        self.imsave_and_report_to(commonsheet2)
+    # def test_imsave_and_report_to_various_spreadsheets(self):
+    #     commonsheet0 = Path("./test_report_common_spreadsheet.xls")
+    #     commonsheet1 = Path("./test_report_common_spreadsheet.xlsx")
+    #     commonsheet2 = Path("./test_report_common_spreadsheet.csv")
+    #     self.imsave_and_report_to(commonsheet0)
+    #     self.imsave_and_report_to(commonsheet1)
+    #     self.imsave_and_report_to(commonsheet2)
 
-    def imsave_and_report_to(self, commonsheet):
-        outputdir = Path("./test_report/")
-        if commonsheet.exists():
-            os.remove(commonsheet)
-        fn = "test_image.png"
-        img = 50 + np.random.rand(100, 100) * 30
-        img[20:60, 20:60] += 100
-        img = img.astype(np.uint8)
-        report = exsu.report.Report(
-            outputdir=outputdir, additional_spreadsheet_fn=commonsheet
-        )
-        report.imsave(fn, img)
-
-        assert (outputdir / fn).exists()
-        report.add_cols_to_actual_row({"A":1})
-        report.finish_actual_row()
-        report.dump()
-        assert commonsheet.exists()
 
     def test_imsave_npz_and_skimage(self):
         outputdir = Path("./test_report/")
@@ -260,3 +241,38 @@ def test_savefig(tmp_path):
     assert (outputdir / fn_as_figure_npz).exists()
     # assert (outputdir / fn_npz).exists()
     # assert (outputdir / fn_skimage).exists()
+
+@pytest.mark.parametrize('suffix', [('.xls'), ('.xlsx'), ('.xls')])
+def test_imsave_and_report_to_various_spreadsheets(suffix):
+    commonsheet = Path(f"./test_report_common_spreadsheet{suffix}")
+    outputdir = Path("./test_report/")
+    if commonsheet.exists():
+        commonsheet.unlink()
+        # os.remove(commonsheet)
+    fn = Path("test_image.png")
+    if fn.exists():
+        fn.unlink()
+    img = 50 + np.random.rand(100, 100) * 30
+    img[20:60, 20:60] += 100
+    img = img.astype(np.uint8)
+    report = exsu.report.Report(
+        outputdir=outputdir, additional_spreadsheet_fn=commonsheet
+    )
+    report.imsave(fn, img)
+
+    assert (outputdir / fn).exists()
+    report.add_cols_to_actual_row({"A":1})
+    report.finish_actual_row()
+    report.dump()
+    assert commonsheet.exists()
+    assert "A" in exsu.report.read_spreadsheet(commonsheet).keys()
+    assert "B" not in exsu.report.read_spreadsheet(commonsheet).keys()
+    report.init()
+    # sz0 = commonsheet.stat().st_size
+    report.add_cols_to_actual_row({"A": 1, "B": 2, "C": 12134})
+    report.finish_actual_row()
+    report.dump()
+    assert commonsheet.exists()
+    # sz1 = commonsheet.stat().st_size
+    assert "A" in exsu.report.read_spreadsheet(commonsheet).keys()
+    assert "B" in exsu.report.read_spreadsheet(commonsheet).keys()
