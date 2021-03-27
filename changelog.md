@@ -3,7 +3,7 @@
 Actual version 0.4.1
 
 ## 0.5
-
+ * [Added] CSV support
  * [Changed] Additional spreadsheet saved without index to be compatible with common spreadsheet
  * [Added] Find if of closest points in the dataframe
  * [Added] `kwargs` can be used in `imsave()`

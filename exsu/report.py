@@ -388,13 +388,17 @@ def append_df_to_excel(
 
     filename = Path(filename)
     if filename.exists():
+        if filename.suffix in ('.xlsx', ".xls"):
         # writer = pd.ExcelWriter(filename, engine='openpyxl')
-
-        dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
+            dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
+        if filename.suffix in ('.csv'):
+            dfold = pd.read_csv(str(filename))
+        else:
+            raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
-        dfcombine = dfold.append(df, ignore_index=True, sort=True)
-        dfcombine.to_excel(str(filename), sheet_name=sheet_name, index=False)
-        return dfcombine
+        df = dfold.append(df, ignore_index=True, sort=True)
+        df.to_excel(str(filename), sheet_name=sheet_name, index=False,
+                           engine='openpyxl')
         # try:
         #     dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
         #     dfcombine = dfold.append(df, ignore_index=True)
@@ -407,9 +411,18 @@ def append_df_to_excel(
 
     else:
         filename.parent.mkdir(parents=True, exist_ok=True)
+
         # pd.read_excel(filename, sheet_name=)
+    if filename.suffix == '.xlsx':
+        df.to_excel(str(filename), sheet_name=sheet_name, index=False,
+                engine='openpyxl' )
+    elif filename.suffix == '.xls':
         df.to_excel(str(filename), sheet_name=sheet_name, index=False)
-        return df
+    elif filename.suffix == '.csv':
+        df.to_csv(str(filename), index=False)
+    else:
+        raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
+    return df
 
     # # ignore [engine] parameter if it was passed
     # if 'engine' in to_excel_kwargs:

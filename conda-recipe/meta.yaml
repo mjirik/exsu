@@ -58,6 +58,7 @@ requirements:
     - matplotlib
     - scikit-image
     - xlrd
+    - xlwt
     - gitpython
     # - { pin_compatible('imma', max_pin='x.x') }
     # - numpy

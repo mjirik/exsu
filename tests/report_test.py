@@ -56,9 +56,17 @@ class ReportTest(unittest.TestCase):
         df = pd.read_excel(commonsheet)
         self.assertEqual(len(df), 3, "3 lines expected in the excel file")
 
-    def test_imsave(self):
+    def test_imsave_and_report_to_various_spreadsheets(self):
         outputdir = Path("./test_report/")
-        commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+        commonsheet0 = Path("./test_report_common_spreadsheet.xls")
+        commonsheet1 = Path("./test_report_common_spreadsheet.xlsx")
+        commonsheet2 = Path("./test_report_common_spreadsheet.csv")
+        self.imsave_and_report_to(commonsheet0)
+        self.imsave_and_report_to(commonsheet1)
+        self.imsave_and_report_to(commonsheet2)
+
+    def imsave_and_report_to(self, commonsheet):
+        outputdir = Path("./test_report/")
         if commonsheet.exists():
             os.remove(commonsheet)
         fn = "test_image.png"
@@ -71,6 +79,10 @@ class ReportTest(unittest.TestCase):
         report.imsave(fn, img)
 
         assert (outputdir / fn).exists()
+        report.add_cols_to_actual_row({"A":1})
+        report.finish_actual_row()
+        report.dump()
+        assert commonsheet.exists()
 
     def test_imsave_npz_and_skimage(self):
         outputdir = Path("./test_report/")
