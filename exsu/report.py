@@ -388,17 +388,18 @@ def append_df_to_excel(
 
     filename = Path(filename)
     if filename.exists():
-        if filename.suffix in ('.xlsx', ".xls"):
-        # writer = pd.ExcelWriter(filename, engine='openpyxl')
+        if filename.suffix in (".xls"):
+            # writer = pd.ExcelWriter(filename, engine='openpyxl')
             dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
-        if filename.suffix in ('.csv'):
+        elif filename.suffix in (".xlsx"):
+            dfold = pd.read_excel(str(filename), sheet_name=sheet_name, engine='openpyxl')
+        elif filename.suffix in ('.csv'):
             dfold = pd.read_csv(str(filename))
         else:
             raise ValueError(f"Suffix '{filename.suffix}' is not supported.")
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
         df = dfold.append(df, ignore_index=True, sort=True)
-        df.to_excel(str(filename), sheet_name=sheet_name, index=False,
-                           engine='openpyxl')
+        df.to_excel(str(filename), sheet_name=sheet_name, index=False, engine='openpyxl')
         # try:
         #     dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
         #     dfcombine = dfold.append(df, ignore_index=True)
