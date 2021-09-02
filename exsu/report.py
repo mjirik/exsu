@@ -265,7 +265,7 @@ class Report:
 
         return arr
 
-    def imsave_as_fig(self, base_fn, arr, level=60, npz_level=30):
+    def imsave_as_fig(self, base_fn, arr, level=60, npz_level=30, **kwargs_savefig):
         """
         Save given array as figure and save array as npy as well.
         :param base_fn:
@@ -282,7 +282,7 @@ class Report:
             plt.colorbar()
             if self.save:
                 fn = self.join_output_dir(filename + "" + ext)
-                plt.savefig(fn)
+                plt.savefig(fn, **kwargs_savefig)
             if self.show:
                 plt.show()
             else:
@@ -294,7 +294,7 @@ class Report:
     #     if self.save:
     #         self.imsave
 
-    def savefig(self, base_fn, level=60):
+    def savefig(self, base_fn, level=60, **kwargs_savefig):
         """
         Save figure with matploglib if severity is high enough.
         Do not close figure.
@@ -311,10 +311,10 @@ class Report:
                 ext = ".png"
             if self.save:
                 fn = self.join_output_dir(filename + "" + ext)
-                plt.savefig(fn)
+                plt.savefig(fn, **kwargs_savefig)
                 # self.imgs[base_fn] = [fn]
 
-    def savefig_and_show(self, base_fn, fig, level=60):
+    def savefig_and_show(self, base_fn, fig, level=60, **kwargs_savefig):
         """
         Save figure with matploglib if severity is high enough and then show if
         report 'show' parameter is set true.
@@ -326,7 +326,7 @@ class Report:
         """
         import matplotlib.pyplot as plt
 
-        self.savefig(base_fn, level=level)
+        self.savefig(base_fn, level=level, **kwargs_savefig)
         if self.show:
             plt.show()
         else:
