@@ -2,6 +2,10 @@
 
 Actual version 0.5.2
 
+## 0.6
+
+ * [Added] `savefig_no_border` added to save figure with no borders at all.
+
 ## 0.5
  * [Added] CSV support
  * [Changed] Additional spreadsheet saved without index to be compatible with common spreadsheet

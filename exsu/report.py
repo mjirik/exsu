@@ -311,8 +311,23 @@ class Report:
                 ext = ".png"
             if self.save:
                 fn = self.join_output_dir(filename + "" + ext)
+                # plt.show()
+                logger.debug(kwargs_savefig)
+                logger.debug(fn)
                 plt.savefig(fn, **kwargs_savefig)
                 # self.imgs[base_fn] = [fn]
+
+    def savefig_no_border(self, base_fn, level=60, **kwargs_savefig):
+        import matplotlib.pyplot as plt
+        plt.gca().set_axis_off()
+        plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
+                            hspace=0, wspace=0)
+        plt.margins(0, 0)
+        plt.gca().xaxis.set_major_locator(plt.NullLocator())
+        plt.gca().yaxis.set_major_locator(plt.NullLocator())
+        self.savefig(base_fn=base_fn, level=level, bbox_inches='tight',
+                    pad_inches=0, **kwargs_savefig)
+
 
     def savefig_and_show(self, base_fn, fig, level=60, **kwargs_savefig):
         """

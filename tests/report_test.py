@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
-
+import skimage.io
 from loguru import logger
 import unittest
 import os
@@ -204,10 +204,11 @@ def test_savefig(tmp_path):
     if commonsheet.exists():
         os.remove(commonsheet)
     fn_noext = "test_figure"
-    fn = "test_figure.png"
+    fn = outputdir / "test_figure.png"
 
-    fn_as_figure = "test_figure.png"
-    fn_as_figure_npz = "test_figure.npz"
+    fn_as_figure_noext = "test_as_figure"
+    fn_as_figure = outputdir / "test_as_figure.png"
+    fn_as_figure_npz = outputdir / "test_as_figure.npz"
     # fn_npz = Path("test_figure.npz")
     # fn_skimage = Path("test_figure.png")
     if Path(fn).exists():
@@ -237,15 +238,70 @@ def test_savefig(tmp_path):
 
     # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
 
-    assert (outputdir / fn).exists()
+    assert (fn).exists()
 
     # test another function saving as figure
-    report.imsave_as_fig(fn_as_figure, img)
-    assert (outputdir / fn_as_figure).exists()
-    assert (outputdir / fn_as_figure_npz).exists()
+    report.imsave_as_fig(fn_as_figure_noext, img)
+    assert (fn_as_figure).exists()
+    assert (fn_as_figure_npz).exists()
     # assert (outputdir / fn_npz).exists()
     # assert (outputdir / fn_skimage).exists()
 
+def test_savefig_no_border(tmp_path):
+    # outputdir = Path("./test_report/")
+    outputdir = Path(tmp_path)
+    commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+    logger.debug(f"outputdir={outputdir}")
+    if commonsheet.exists():
+        os.remove(commonsheet)
+    fn_noext = "test_figure_no_border"
+    fn = outputdir / "test_figure_no_border.png"
+
+    # fn_as_figure = outputdir / "test_figure_no_border.png"
+    # fn_as_figure_npz = outputdir / "test_figure_no_border.npz"
+    # fn_npz = Path("test_figure.npz")
+    # fn_skimage = Path("test_figure.png")
+    if Path(fn).exists():
+        os.remove(fn)
+    # if Path(fn_as_figure).exists():
+    #     os.remove(fn_as_figure)
+    # if Path(fn_as_figure_npz).exists():
+    #     os.remove(fn_as_figure_npz)
+    img = 50 + np.random.rand(100, 100, 3) * 30
+    img[20:60, 20:60, 0] += 100
+    img[40:80, 20:60, 1] += 100
+    img[40:60, 40:80, 2] += 100
+    img = img.astype(np.uint8)
+    from matplotlib import pyplot as plt
+
+    report = exsu.report.Report(
+        outputdir=outputdir,
+        additional_spreadsheet_fn=commonsheet,
+        level="debug"  # warning = 10
+        # show=False
+    )
+    report.set_save(True)
+    report.set_show(False)
+    fig = plt.figure()
+    plt.imshow(img)
+    report.savefig_no_border(fn_noext)
+    plt.close(fig)  # probably not necessary
+
+    # report.imsave(fn, img, level=60, level_skimage=60, level_npz=60, k=1)
+
+    assert (fn).exists()
+
+    # test another function saving as figure
+    # assert (fn_as_figure).exists()
+    # assert (fn_as_figure_npz).exists()
+    img_loaded = skimage.io.imread(fn)
+    plt.figure()
+    plt.imshow(img_loaded)
+    plt.axis('off')
+    plt.show()
+    assert img_loaded[0,0,0] < 80.0, 'there is no white space on the border of the image'
+    # assert (outputdir / fn_npz).exists()
+    # assert (outputdir / fn_skimage).exists()
 
 @pytest.mark.parametrize("suffix", [(".xls"), (".xlsx"), (".xls")])
 def test_imsave_and_report_to_various_spreadsheets(suffix):
