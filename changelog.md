@@ -5,6 +5,7 @@ Actual version 0.5.2
 ## 0.6
 
  * [Added] `savefig_no_border` added to save figure with no borders at all.
+ * [Changed] Additional `kwargs` passed through `savefig` functions.
 
 ## 0.5
  * [Added] CSV support
