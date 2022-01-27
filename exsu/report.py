@@ -312,7 +312,7 @@ class Report:
             if self.save:
                 fn = self.join_output_dir(filename + "" + ext)
                 # plt.show()
-                logger.debug(kwargs_savefig)
+                logger.trace(kwargs_savefig)
                 logger.debug(fn)
                 plt.savefig(fn, **kwargs_savefig)
                 # self.imgs[base_fn] = [fn]
