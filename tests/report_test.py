@@ -13,6 +13,7 @@ import pandas as pd
 import exsu.report
 import numpy as np
 import pytest
+from unittest import mock
 
 pytest_plugins = "pytester"
 
@@ -149,10 +150,58 @@ def test_report_no_outputdir(tmp_path):
                         )
     assert "numpy_version" in dfo.keys()
 
+def test_report_permission_error(tmp_path):
+    """
+    Block save to file and check whether the backup file is created.
+    """
+    outputdir = Path(tmp_path)
+    commonsheet = Path(outputdir / "test_report_common_spreadsheet_permission_error.csv")
+    commonsheet1 = Path(outputdir / "test_report_common_spreadsheet_permission_error.1.csv")
+    logger.debug(f"outputdir={outputdir}")
+    if commonsheet.exists():
+        os.remove(commonsheet)
+    if commonsheet1.exists():
+        os.remove(commonsheet1)
+
+    orig_write = exsu.report._write_spreadsheet
+
+    ncalls = 0
+    def my_side_effect(*args, **kwargs):
+        nonlocal ncalls
+
+        ncalls += 1
+        if ncalls == 1:
+            raise PermissionError(f"Writing spreadsheet file args={args}, kwargs={kwargs}")
+            return None
+        else:
+            return orig_write(*args, **kwargs)
+
+    with mock.patch("exsu.report._write_spreadsheet", side_effect=my_side_effect) as mock_write_spreadsheet:
+
+        # mock_write_spreadsheet.side_effect=[None, 11]
+
+        # logger.debug(exsu.report._write_spreadsheet("asdf.cls"))
+        #
+        # logger.debug(exsu.report._write_spreadsheet("1"))
+        # logger.debug(exsu.report._write_spreadsheet("1"))
+
+        report = exsu.report.Report(
+            outputdir=None,
+            additional_spreadsheet_fn=commonsheet,
+            level="debug",  # warning = 10
+            check_version_of=["numpy"]
+            # show=False
+        )
+        report.add_cols_to_actual_row({"col1": 15, "col2": "class1"})
+        report.finish_actual_row()
+        report.dump()
+        assert commonsheet1.exists()
+        assert ~commonsheet.exists()
+
 
 def test_report_no_outputdir_and_save_fig(tmp_path):
     outputdir = Path(tmp_path)
-    commonsheet = Path("./test_report_common_spreadsheet.xlsx")
+    commonsheet:Path = outputdir/ "test_report_common_spreadsheet.xlsx"
     logger.debug(f"outputdir={outputdir}")
     if commonsheet.exists():
         os.remove(commonsheet)

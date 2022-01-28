@@ -6,6 +6,7 @@ Actual version 0.6.0
 
  * [Added] `savefig_no_border` added to save figure with no borders at all.
  * [Changed] Additional `kwargs` passed through `savefig` functions.
+ * [Added] Create file with name `{stem}.1.suffix` if spreadsheet file is opened in different application
 
 ## 0.5
  * [Added] CSV support

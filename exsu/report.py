@@ -14,6 +14,7 @@ from typing import Union, List, Dict, Any
 import numpy as np
 from . import git_tools
 from . import packages
+import re
 
 
 class Report:
@@ -411,10 +412,11 @@ def append_df_to_excel(
     import pandas as pd
 
     filename = Path(filename)
+    dfo = df
     if filename.exists():
         dfold = read_spreadsheet(filename, sheet_name=sheet_name)
         # dfout = pd.concat([dfin, df], axis=0, ignore_index=True)
-        df = dfold.append(df, ignore_index=True, sort=True)
+        dfo = dfold.append(df, ignore_index=True, sort=True)
         # df.to_excel(str(filename), sheet_name=sheet_name, index=False, engine='openpyxl')
         # try:
         #     dfold = pd.read_excel(str(filename), sheet_name=sheet_name)
@@ -425,11 +427,28 @@ def append_df_to_excel(
         # import xlwings as xw
         # sht = xw.Book(str(filename)).sheets[0]
         # sht.range('A1').expand().options(pd.DataFrame).value
+    try:
+        dfo = _write_spreadsheet(dfo, filename, sheet_name)
+    except PermissionError as e:
+        srch = re.search(r".*_([0-9]+)", filename.stem)
+        logger.debug(srch)
+        if srch is None:
+            number = 0
+        else:
+            number = int(srch.groups()[0])
 
-    else:
-        filename.parent.mkdir(parents=True, exist_ok=True)
+        number += 1
 
-        # pd.read_excel(filename, sheet_name=)
+        fn2 = filename.parent / (filename.stem + f".{number}" + filename.suffix )
+        logger.warning(f"Permission Error. File {str(filename)} already used. Trying save to {str(fn2)}")
+        dfo = append_df_to_excel(fn2, df=df, sheet_name=sheet_name)
+    return dfo
+
+
+
+def _write_spreadsheet(df:pd.DataFrame, filename:Path, sheet_name:str):
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    # pd.read_excel(filename, sheet_name=)
     if filename.suffix == ".xlsx":
         df.to_excel(
             str(filename), sheet_name=sheet_name, index=False, engine="openpyxl"
